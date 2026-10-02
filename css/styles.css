@@ -1,0 +1,1115 @@
+/**
+ * styles.css - Estilos principales y Branding Institucional UTP
+ * Universidad Tecnológica del Perú - Sistema de Matrícula Accesible
+ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: var(--font-base);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* ==========================================================================
+   CABECERA PRINCIPAL Y BARRA DE UTILIDADES DE ACCESIBILIDAD
+   ========================================================================== */
+.site-header {
+  background-color: #FFFFFF;
+  border-bottom: 2px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+body.high-contrast .site-header {
+  background-color: #000000;
+  border-bottom: 2px solid #FFFF00;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.utp-badge {
+  background-color: var(--utp-red);
+  color: #FFFFFF;
+  font-weight: 900;
+  font-size: var(--font-xl);
+  padding: 0.35rem 0.85rem;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.high-contrast .utp-badge {
+  background-color: #FFFF00;
+  color: #000000;
+  border: 2px solid #FFFFFF;
+}
+
+.brand-title {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.brand-subtitle {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  display: block;
+}
+
+/* Herramientas de Accesibilidad Superior (Selector A-/A+, Alto Contraste) */
+.accessibility-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.text-resize-group {
+  display: inline-flex;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: var(--bg-card);
+}
+
+.btn-util {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: none;
+  min-height: var(--touch-target-min);
+  padding: 0.5rem 0.85rem;
+  font-weight: 700;
+  font-size: var(--font-base);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: background-color 0.15s;
+}
+
+.btn-util:hover {
+  background-color: #E2E8F0;
+}
+
+body.high-contrast .btn-util:hover {
+  background-color: #333333;
+}
+
+.btn-util.active {
+  background-color: var(--utp-red);
+  color: #FFFFFF;
+}
+
+body.high-contrast .btn-util.active {
+  background-color: #FFFF00;
+  color: #000000;
+}
+
+.btn-contrast-toggle {
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+}
+
+/* ==========================================================================
+   BARRA DE ESTADO PERSISTENTE DEL ASISTENTE POR VOZ
+   ========================================================================== */
+.voice-assistant-bar {
+  background-color: #1E293B;
+  color: #FFFFFF;
+  padding: 0.6rem 1.5rem;
+  border-bottom: 3px solid var(--utp-red);
+}
+
+body.high-contrast .voice-assistant-bar {
+  background-color: #121212;
+  border-bottom: 3px solid #FFFF00;
+}
+
+.voice-bar-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.voice-status-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pulse-indicator {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #10B981;
+  display: inline-block;
+  position: relative;
+}
+
+.pulse-indicator.listening {
+  background-color: #EF4444;
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  animation: pulse-ring 1.4s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+.pulse-indicator.processing {
+  background-color: #F59E0B;
+}
+
+.pulse-indicator.muted {
+  background-color: #6B7280;
+  box-shadow: none;
+  animation: none;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.voice-status-text {
+  font-weight: 700;
+  font-size: var(--font-base);
+}
+
+.last-command-pill {
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: var(--font-sm);
+  color: #E2E8F0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+body.high-contrast .last-command-pill {
+  background-color: #000000;
+  border-color: #FFFF00;
+  color: #FFFF00;
+}
+
+.voice-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-voice-toggle {
+  background-color: var(--utp-red);
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+  border-radius: 6px;
+  font-weight: 700;
+  min-height: var(--touch-target-min);
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+body.high-contrast .btn-voice-toggle {
+  background-color: #FFFF00;
+  color: #000000;
+  border-color: #FFFF00;
+}
+
+.btn-tts-toggle {
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  font-weight: 700;
+  min-height: var(--touch-target-min);
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-tts-toggle.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: #FFFFFF;
+}
+
+body.high-contrast .btn-tts-toggle {
+  color: #FFFF00;
+  border-color: #FFFF00;
+}
+
+/* ==========================================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================================== */
+.main-content {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* ==========================================================================
+   PANTALLA 1: LOGIN ACCESIBLE
+   ========================================================================== */
+.login-view-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2rem;
+  align-items: start;
+  margin-top: 1rem;
+}
+
+@media (max-width: 900px) {
+  .login-view-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.login-card {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.welcome-audio-banner {
+  background-color: var(--utp-red-light);
+  border-left: 6px solid var(--utp-red);
+  padding: 1rem 1.25rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+body.high-contrast .welcome-audio-banner {
+  background-color: #1A1A00;
+  border-left-color: #FFFF00;
+  border: 2px solid #FFFF00;
+}
+
+.welcome-banner-text {
+  font-size: var(--font-base);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 700;
+  font-size: var(--font-base);
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.form-hint {
+  display: block;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  min-height: var(--touch-target-large);
+  padding: 0.75rem 1rem;
+  font-size: var(--font-lg);
+  font-weight: 600;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.voice-input-wrapper {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-mic-inline {
+  background-color: var(--utp-red);
+  color: #FFFFFF;
+  border: 2px solid var(--utp-red);
+  border-radius: 8px;
+  min-width: var(--touch-target-large);
+  min-height: var(--touch-target-large);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+body.high-contrast .btn-mic-inline {
+  background-color: #FFFF00;
+  color: #000000;
+  border-color: #FFFF00;
+}
+
+.pin-fallback-card {
+  background-color: #EDF2F7;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+body.high-contrast .pin-fallback-card {
+  background-color: #1A1A1A;
+  border: 2px dashed #FFFF00;
+}
+
+.btn-primary {
+  background-color: var(--utp-red);
+  color: #FFFFFF;
+  border: 3px solid transparent;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: var(--font-lg);
+  min-height: var(--touch-target-large);
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: background-color 0.15s, transform 0.1s;
+}
+
+.btn-primary:hover {
+  background-color: var(--utp-red-dark);
+}
+
+body.high-contrast .btn-primary {
+  background-color: #FFFF00;
+  color: #000000;
+  border-color: #FFFFFF;
+}
+
+body.high-contrast .btn-primary:hover {
+  background-color: #D4D400;
+}
+
+/* Panel lateral de comandos por voz interactivos */
+.command-sheet-card {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.command-sheet-title {
+  font-size: var(--font-lg);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.command-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.command-item {
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  background-color: var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+body.high-contrast .command-item {
+  border: 1px solid #FFFF00;
+  background-color: #121212;
+}
+
+.command-trigger-badge {
+  background-color: #2D3748;
+  color: #FFFFFF;
+  font-family: monospace;
+  font-size: var(--font-sm);
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+body.high-contrast .command-trigger-badge {
+  background-color: #FFFF00;
+  color: #000000;
+}
+
+.btn-test-command {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.35rem 0.6rem;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 38px;
+}
+
+body.high-contrast .btn-test-command {
+  border-color: #FFFF00;
+  color: #FFFF00;
+}
+
+/* ==========================================================================
+   PANTALLA 2: SELECCIÓN Y MATRÍCULA DE ASIGNATURAS
+   ========================================================================== */
+.student-banner {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem 1.75rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.student-info-name {
+  font-size: var(--font-xl);
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.student-info-details {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.matricula-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .matricula-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Filtros accesibles */
+.filter-toolbar {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filter-btn-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-filter {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  min-height: var(--touch-target-min);
+  padding: 0.4rem 1rem;
+  font-weight: 700;
+  font-size: var(--font-base);
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.btn-filter.active {
+  background-color: var(--utp-red);
+  color: #FFFFFF;
+  border-color: var(--utp-red);
+}
+
+body.high-contrast .btn-filter.active {
+  background-color: #FFFF00;
+  color: #000000;
+  border-color: #FFFF00;
+}
+
+/* Tarjetas de Asignaturas */
+.courses-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.course-card {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.25rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1.25rem;
+  align-items: center;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+@media (max-width: 768px) {
+  .course-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+.course-card.enrolled {
+  border: 3px solid var(--color-success-border);
+  background-color: var(--color-success-bg);
+}
+
+body.high-contrast .course-card.enrolled {
+  border: 3px solid #00FF66;
+  background-color: #002B11;
+}
+
+.course-card.highlight-card {
+  outline: 4px solid var(--utp-red) !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 18px rgba(200, 16, 46, 0.45) !important;
+  transform: scale(1.01);
+}
+
+body.high-contrast .course-card.highlight-card {
+  outline: 4px solid #FFFF00 !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 20px rgba(255, 255, 0, 0.75) !important;
+}
+
+.course-number-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--utp-red);
+  color: #FFFFFF;
+  font-size: var(--font-xl);
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #FFFFFF;
+}
+
+body.high-contrast .course-number-badge {
+  background-color: #FFFF00;
+  color: #000000;
+  border-color: #FFFFFF;
+}
+
+.course-card.enrolled .course-number-badge {
+  background-color: var(--color-success-border);
+}
+
+body.high-contrast .course-card.enrolled .course-number-badge {
+  background-color: #00FF66;
+  color: #000000;
+}
+
+.course-main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.course-title {
+  font-size: var(--font-lg);
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.course-meta-tags {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.course-tag {
+  background-color: #EDF2F7;
+  border: 1px solid var(--border-subtle);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+body.high-contrast .course-tag {
+  background-color: #121212;
+  border-color: #FFFF00;
+  color: #FFFF00;
+}
+
+.course-schedule-text {
+  font-weight: 700;
+  color: var(--utp-red-dark);
+  font-size: var(--font-base);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+body.high-contrast .course-schedule-text {
+  color: #FFFF00;
+}
+
+.course-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 170px;
+}
+
+.btn-course-action {
+  min-height: var(--touch-target-large);
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: var(--font-base);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 2px solid transparent;
+}
+
+.btn-course-add {
+  background-color: var(--utp-red);
+  color: #FFFFFF;
+}
+
+.btn-course-add:hover {
+  background-color: var(--utp-red-dark);
+}
+
+body.high-contrast .btn-course-add {
+  background-color: #FFFF00;
+  color: #000000;
+  border-color: #FFFF00;
+}
+
+.btn-course-remove {
+  background-color: #DC2626;
+  color: #FFFFFF;
+}
+
+body.high-contrast .btn-course-remove {
+  background-color: #FF4444;
+  color: #000000;
+  border-color: #FF4444;
+}
+
+/* Panel Lateral Derecho: Horario Armado */
+.sticky-sidebar {
+  position: sticky;
+  top: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.enrolled-panel-card {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.credits-meter-wrapper {
+  margin: 1rem 0;
+}
+
+.credits-meter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+  font-size: var(--font-lg);
+}
+
+.credits-progress-bar {
+  width: 100%;
+  height: 20px;
+  background-color: #E2E8F0;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+body.high-contrast .credits-progress-bar {
+  background-color: #121212;
+  border-color: #FFFF00;
+}
+
+.credits-progress-fill {
+  height: 100%;
+  background-color: var(--utp-red);
+  transition: width 0.3s ease;
+}
+
+body.high-contrast .credits-progress-fill {
+  background-color: #FFFF00;
+}
+
+.enrolled-courses-mini-list {
+  list-style: none;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.enrolled-mini-item {
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+body.high-contrast .enrolled-mini-item {
+  background-color: #1A1A1A;
+  border-color: #FFFF00;
+}
+
+.btn-remove-mini {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   PANTALLA 3: HORARIO CONSOLIDADO Y NARRACIÓN ASISTIDA
+   ========================================================================== */
+.schedule-hero-banner {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.schedule-audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-audio-control {
+  min-height: var(--touch-target-min);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: var(--font-base);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.btn-audio-control.primary {
+  background-color: var(--utp-red);
+  color: #FFFFFF;
+  border-color: var(--utp-red);
+}
+
+body.high-contrast .btn-audio-control.primary {
+  background-color: #FFFF00;
+  color: #000000;
+  border-color: #FFFF00;
+}
+
+/* Grilla Semanal Visual */
+.schedule-grid-wrapper {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+
+.schedule-grid-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.schedule-grid-table th,
+.schedule-grid-table td {
+  border: 2px solid var(--border-color);
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.schedule-grid-table th {
+  background-color: #2D3748;
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: var(--font-base);
+}
+
+body.high-contrast .schedule-grid-table th {
+  background-color: #121212;
+  color: #FFFF00;
+  border-color: #FFFF00;
+}
+
+.time-col {
+  width: 130px;
+  font-weight: 800;
+  background-color: #F1F5F9;
+  color: var(--text-primary);
+}
+
+body.high-contrast .time-col {
+  background-color: #1A1A1A;
+}
+
+.schedule-cell-block {
+  background-color: #1E3A8A;
+  color: #FFFFFF;
+  padding: 0.6rem;
+  border-radius: 6px;
+  font-size: var(--font-sm);
+  font-weight: 700;
+  text-align: left;
+  border-left: 6px solid var(--utp-red);
+  margin: 0.25rem 0;
+}
+
+body.high-contrast .schedule-cell-block {
+  background-color: #000000;
+  color: #FFFF00;
+  border: 2px solid #FFFF00;
+  border-left: 6px solid #FFFF00;
+}
+
+.cell-course-name {
+  font-size: var(--font-base);
+  font-weight: 800;
+  margin-bottom: 0.2rem;
+}
+
+.cell-course-room {
+  font-size: var(--font-sm);
+  opacity: 0.9;
+}
+
+/* Resumen lineal accesible */
+.schedule-linear-section {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.linear-day-group {
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 1rem;
+}
+
+.linear-day-heading {
+  font-size: var(--font-lg);
+  font-weight: 800;
+  color: var(--utp-red);
+  margin-bottom: 0.5rem;
+}
+
+body.high-contrast .linear-day-heading {
+  color: #FFFF00;
+}
+
+.linear-course-item {
+  background-color: var(--bg-main);
+  border-left: 4px solid var(--utp-red);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0 6px 6px 0;
+}
+
+body.high-contrast .linear-course-item {
+  border-left-color: #FFFF00;
+  border: 1px solid #FFFF00;
+}
+
+/* Acciones finales de descarga y regreso */
+.schedule-actions-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.btn-secondary {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: var(--font-base);
+  min-height: var(--touch-target-large);
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+body.high-contrast .btn-secondary {
+  border-color: #FFFF00;
+  color: #FFFF00;
+}
+
+/* Modal o Alerta de Cruce de Horarios */
+.conflict-alert {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-text);
+  border: 2px solid var(--color-danger-border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+}
+
+body.high-contrast .conflict-alert {
+  background-color: #330000;
+  color: #FF6666;
+  border-color: #FF6666;
+}
+
+/* Footer institucional */
+.site-footer {
+  background-color: #1E1E1E;
+  color: #FFFFFF;
+  padding: 1.5rem;
+  margin-top: auto;
+  border-top: 4px solid var(--utp-red);
+  text-align: center;
+  font-size: var(--font-sm);
+}
+
+body.high-contrast .site-footer {
+  background-color: #000000;
+  border-top: 4px solid #FFFF00;
+  color: #FFFFFF;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}

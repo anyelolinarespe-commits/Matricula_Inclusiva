@@ -1,0 +1,159 @@
+/**
+ * accessibility.css - Sistema de Accesibilidad WCAG 2.1 AAA
+ * Sistema de Matrícula Accesible UTP
+ */
+
+:root {
+  /* Escala tipográfica base */
+  --font-scale: 1;
+  --font-base: calc(1rem * var(--font-scale));
+  --font-sm: calc(0.875rem * var(--font-scale));
+  --font-lg: calc(1.25rem * var(--font-scale));
+  --font-xl: calc(1.5rem * var(--font-scale));
+  --font-2xl: calc(1.875rem * var(--font-scale));
+  --font-3xl: calc(2.25rem * var(--font-scale));
+
+  /* Paleta institucional UTP accesible WCAG AAA (> 7:1) */
+  --utp-red: #A60C25;           /* Rojo de alto contraste (ratio > 7.2:1 con blanco) */
+  --utp-red-light: #FDF2F4;     /* Fondo suave para tarjetas y alertas */
+  --utp-red-dark: #7A091B;      /* Rojo profundo para hover y activos */
+  --utp-red-border: #8A0B1F;    /* Borde nítido */
+  
+  --bg-main: #F8F9FA;          /* Fondo accesible neutro */
+  --bg-card: #FFFFFF;          /* Fondo de tarjetas */
+  --text-primary: #121212;     /* Casi negro (ratio 16:1 con blanco) */
+  --text-secondary: #2D3748;   /* Gris oscuro de alto contraste (ratio 9.5:1) */
+  --border-color: #4A5568;     /* Bordes bien contrastados */
+  --border-subtle: #CBD5E0;
+
+  /* Estados y semántica */
+  --color-success-bg: #E6F4EA;
+  --color-success-text: #0D652D;
+  --color-success-border: #137333;
+
+  --color-warning-bg: #FEF7E0;
+  --color-warning-text: #7C4A03;
+  --color-warning-border: #B06000;
+
+  --color-danger-bg: #FCE8E6;
+  --color-danger-text: #8C1D18;
+  --color-danger-border: #C5221F;
+
+  --color-info-bg: #E8F0FE;
+  --color-info-text: #174EA6;
+  --color-info-border: #1A73E8;
+
+  /* Focus ring forzado de 3px con desplazamiento */
+  --focus-ring-color: #A60C25;
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 3px;
+
+  /* Tamaños mínimos de destino (WCAG 2.5.5 / 2.5.8) */
+  --touch-target-min: 48px;
+  --touch-target-large: 56px;
+}
+
+/* Modo Alto Contraste Adicional (Tema Obscuro / Amarillo Neón) */
+body.high-contrast {
+  --utp-red: #FFFF00;           /* Amarillo de máximo contraste en negro */
+  --utp-red-light: #1A1A00;
+  --utp-red-dark: #D4D400;
+  --utp-red-border: #FFFF00;
+
+  --bg-main: #000000;
+  --bg-card: #121212;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E0E0E0;
+  --border-color: #FFFF00;
+  --border-subtle: #888888;
+
+  --color-success-bg: #002B11;
+  --color-success-text: #00FF66;
+  --color-success-border: #00FF66;
+
+  --color-warning-bg: #332600;
+  --color-warning-text: #FFFF33;
+  --color-warning-border: #FFFF33;
+
+  --color-danger-bg: #330000;
+  --color-danger-text: #FF6666;
+  --color-danger-border: #FF6666;
+
+  --color-info-bg: #001A33;
+  --color-info-text: #66B2FF;
+  --color-info-border: #66B2FF;
+
+  --focus-ring-color: #FFFF00;
+  --focus-ring-width: 4px;
+  --focus-ring-offset: 4px;
+}
+
+/* Enlaces de salto directo para lectores de pantalla y teclado */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  background: var(--utp-red);
+  color: #FFFFFF !important;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  z-index: 99999;
+  border-radius: 4px;
+  border: 2px solid #FFFFFF;
+  text-decoration: none;
+  font-size: var(--font-base);
+  transition: top 0.2s ease-in-out;
+}
+
+.skip-link:focus {
+  top: 1rem;
+  outline: var(--focus-ring-width) solid #000000;
+}
+
+/* Foco visual forzado y garantizado para todos los elementos interactivos */
+:focus-visible,
+button:focus,
+a:focus,
+input:focus,
+select:focus,
+textarea:focus,
+[tabindex="0"]:focus {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color) !important;
+  outline-offset: var(--focus-ring-offset) !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9) !important;
+}
+
+body.high-contrast :focus-visible,
+body.high-contrast button:focus,
+body.high-contrast a:focus,
+body.high-contrast input:focus,
+body.high-contrast select:focus {
+  outline: var(--focus-ring-width) solid #FFFF00 !important;
+  outline-offset: var(--focus-ring-offset) !important;
+  box-shadow: 0 0 0 3px #000000 !important;
+}
+
+/* Regiones en vivo ocultas visualmente pero legibles por lectores de pantalla */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Animaciones accesibles (respetando prefers-reduced-motion) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

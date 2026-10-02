@@ -1,0 +1,21 @@
+{
+  "name": "utp-matricula-accesible-v01",
+  "version": "1.0.0",
+  "description": "Prototipo funcional del Sistema de Matrícula Accesible UTP (WCAG 2.1 AAA) con Web Speech API y TTS.",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes serve -l 3000 .",
+    "dev": "npx --yes serve -l 3000 ."
+  },
+  "keywords": [
+    "accessibility",
+    "wcag-aaa",
+    "utp",
+    "web-speech-api",
+    "speech-recognition",
+    "speech-synthesis"
+  ],
+  "author": "UTP Accessibility Engineering",
+  "license": "MIT"
+}

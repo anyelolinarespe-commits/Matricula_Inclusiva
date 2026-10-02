@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sistema de Matrícula Accesible UTP - Diseñado para personas con discapacidad visual y limitaciones motoras bajo directrices WCAG 2.1 AAA con control por voz." />
+  <title>Sistema de Matrícula Accesible | UTP</title>
+
+  <!-- Hojas de Estilo Accesibles -->
+  <link rel="stylesheet" href="css/accessibility.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- Enlaces de Salto Rápido para Lectores de Pantalla y Navegación por Teclado -->
+  <a href="#main-app-container" class="skip-link">Saltar al contenido principal [Alt + S]</a>
+  <a href="#voice-status-bar" class="skip-link">Saltar al panel del asistente por voz</a>
+
+  <!-- Regiones en Vivo ARIA para Anuncios Auditivos de Lectores de Pantalla -->
+  <div id="aria-announcer-assertive" class="sr-only" role="alert" aria-live="assertive" aria-atomic="true"></div>
+  <div id="aria-announcer-polite" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Cabecera Institucional UTP con Barra de Accesibilidad -->
+  <header class="site-header" role="banner">
+    <div class="header-top">
+      <div class="brand-container">
+        <span class="utp-badge" aria-label="Universidad Tecnológica del Perú">UTP</span>
+        <div>
+          <span class="brand-title">Sistema de Matrícula Accesible</span>
+          <span class="brand-subtitle">Universidad Tecnológica del Perú • WCAG 2.1 AAA</span>
+        </div>
+      </div>
+
+      <!-- Barra de Herramientas de Accesibilidad Visual -->
+      <nav class="accessibility-toolbar" aria-label="Herramientas de Accesibilidad">
+        <!-- Selector Funcional A- / Normal / A+ -->
+        <div class="text-resize-group" role="group" aria-label="Selector de tamaño de texto">
+          <button type="button" id="btn-scale-normal" class="btn-util active" data-scale-btn aria-pressed="true" title="Tamaño de texto normal (100%)">
+            A- Normal
+          </button>
+          <button type="button" id="btn-scale-plus" class="btn-util" data-scale-btn aria-pressed="false" title="Tamaño de texto grande (125%)">
+            A+ Grande
+          </button>
+          <button type="button" id="btn-scale-max" class="btn-util" data-scale-btn aria-pressed="false" title="Tamaño de texto extra grande (150%)">
+            A++ Máximo
+          </button>
+        </div>
+
+        <!-- Alternador de Alto Contraste -->
+        <button
+          type="button"
+          id="btn-toggle-contrast"
+          class="btn-util btn-contrast-toggle"
+          aria-pressed="false"
+          title="Alternar entre modo estándar UTP y modo alto contraste amarillo sobre negro"
+        >
+          👁️ Alto Contraste
+        </button>
+      </nav>
+    </div>
+
+    <!-- Barra de Estado Persistente del Asistente por Voz -->
+    <div id="voice-status-bar" class="voice-assistant-bar" role="region" aria-label="Estado del Asistente por Voz">
+      <div class="voice-bar-inner">
+        <div class="voice-status-group">
+          <!-- Indicador dinámico visual: Escuchando comandos (animación pulsante) -->
+          <span id="voice-pulse-indicator" class="pulse-indicator listening" aria-hidden="true"></span>
+          <span id="voice-status-text" class="voice-status-text" aria-live="polite">Escuchando comandos...</span>
+
+          <!-- Píldora del último comando reconocido -->
+          <span id="last-command-pill" class="last-command-pill" aria-live="polite">
+            🗣️ Asistente activo
+          </span>
+
+          <!-- Indicador de audio hablando -->
+          <span id="tts-status-indicator" class="last-command-pill" style="display: none; background: rgba(16, 185, 129, 0.3); border-color: #10B981;">
+            🔊 Narrando...
+          </span>
+        </div>
+
+        <!-- Controles Rápidos del Asistente -->
+        <div class="voice-controls-group">
+          <button
+            type="button"
+            id="btn-toggle-assistant"
+            class="btn-voice-toggle"
+            aria-pressed="true"
+            aria-label="Encender o apagar asistente de voz. Atajo tecla Espacio o Alt más M"
+            title="Presione Espacio o Alt + M para alternar"
+          >
+            🎙️ <span>Asistente: ACTIVO</span>
+          </button>
+
+          <button
+            type="button"
+            id="btn-toggle-tts"
+            class="btn-tts-toggle active"
+            aria-pressed="true"
+            aria-label="Silenciar o reactivar narración de voz del sistema"
+          >
+            🔊 <span>Voz: Activa</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Dinámico de Vistas Accesibles -->
+  <main id="main-app-container" class="main-content" role="main" tabindex="-1">
+    <!-- Se inyecta dinámicamente: LoginView -> MatriculaView -> HorarioView -->
+  </main>
+
+  <!-- Pie de Página Institucional Accesible -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>
+        <strong>Universidad Tecnológica del Perú (UTP)</strong> • Portal de Matrícula Inclusiva
+      </div>
+      <div>
+        ♿ Certificación de Diseño <strong>WCAG 2.1 Nivel AAA</strong> • Soporte Hands-Free por Voz
+      </div>
+      <div style="font-size: var(--font-sm); opacity: 0.85;">
+        Atajos: <kbd>Espacio</kbd> Activar Micrófono | <kbd>Alt + P</kbd> Pausar Voz | <kbd>Alt + R</kbd> Repetir | <kbd>Alt + C</kbd> Alto Contraste | <kbd>Alt + A</kbd> Ayuda
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lógica Modular JavaScript ES6 -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
