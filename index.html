@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Sistema de Matrícula Accesible UTP - Diseñado para personas con discapacidad visual y limitaciones motoras bajo directrices WCAG 2.1 AAA con control por voz." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta name="description" content="Sistema de Matrícula Accesible UTP - Diseñado para personas con discapacidad visual y limitaciones motoras bajo directrices WCAG 2.2 AA con control por voz." />
   <title>Sistema de Matrícula Accesible | UTP</title>
 
   <!-- Hojas de Estilo Accesibles -->
@@ -12,8 +12,8 @@
 </head>
 <body>
 
-  <!-- Enlaces de Salto Rápido para Lectores de Pantalla y Navegación por Teclado -->
-  <a href="#main-app-container" class="skip-link">Saltar al contenido principal [Alt + S]</a>
+  <!-- Enlace de Salto Rápido para Lectores de Pantalla y Navegación por Teclado -->
+  <a href="#contenido-principal" class="skip-link">Saltar al contenido principal</a>
   <a href="#voice-status-bar" class="skip-link">Saltar al panel del asistente por voz</a>
 
   <!-- Regiones en Vivo ARIA para Anuncios Auditivos de Lectores de Pantalla -->
@@ -27,7 +27,7 @@
         <span class="utp-badge" aria-label="Universidad Tecnológica del Perú">UTP</span>
         <div>
           <span class="brand-title">Sistema de Matrícula Accesible</span>
-          <span class="brand-subtitle">Universidad Tecnológica del Perú • WCAG 2.1 AAA</span>
+          <span class="brand-subtitle">Universidad Tecnológica del Perú • WCAG 2.2 AA</span>
         </div>
       </div>
 
@@ -54,10 +54,25 @@
           aria-pressed="false"
           title="Alternar entre modo estándar UTP y modo alto contraste amarillo sobre negro"
         >
-          👁️ Alto Contraste
+          <span aria-hidden="true">👁️</span> <span>Alto Contraste</span>
+        </button>
+
+        <!-- Botón Probar: Verificación y Test de Síntesis de Audio / Volumen -->
+        <button
+          type="button"
+          id="btn-test-sound"
+          class="btn-util btn-test-audio"
+          aria-label="Botón Probar: ejecuta una prueba del sintetizador de voz y verifica el volumen del sistema"
+          data-descripcion="Botón Probar: ejecuta una prueba del sintetizador de voz y verifica el volumen del sistema"
+          title="Ejecutar prueba de audio y verificación de volumen"
+        >
+          <span aria-hidden="true">🔊</span> <span>Probar</span>
         </button>
       </nav>
     </div>
+
+    <!-- Región en vivo ARIA específica para retroalimentación de prueba de sonido -->
+    <div id="test-feedback-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <!-- Barra de Estado Persistente del Asistente por Voz -->
     <div id="voice-status-bar" class="voice-assistant-bar" role="region" aria-label="Estado del Asistente por Voz">
@@ -69,12 +84,12 @@
 
           <!-- Píldora del último comando reconocido -->
           <span id="last-command-pill" class="last-command-pill" aria-live="polite">
-            🗣️ Asistente activo
+            <span aria-hidden="true">🗣️</span> Asistente activo
           </span>
 
           <!-- Indicador de audio hablando -->
           <span id="tts-status-indicator" class="last-command-pill" style="display: none; background: rgba(16, 185, 129, 0.3); border-color: #10B981;">
-            🔊 Narrando...
+            <span aria-hidden="true">🔊</span> Narrando...
           </span>
         </div>
 
@@ -85,10 +100,10 @@
             id="btn-toggle-assistant"
             class="btn-voice-toggle"
             aria-pressed="true"
-            aria-label="Encender o apagar asistente de voz. Atajo tecla Espacio o Alt más M"
-            title="Presione Espacio o Alt + M para alternar"
+            aria-label="Encender o apagar asistente de voz. Atajo Alt más M o tecla Espacio"
+            title="Presione Alt + M o Espacio para alternar"
           >
-            🎙️ <span>Asistente: ACTIVO</span>
+            <span aria-hidden="true">🎙️</span> <span>Asistente: ACTIVO</span>
           </button>
 
           <button
@@ -98,7 +113,7 @@
             aria-pressed="true"
             aria-label="Silenciar o reactivar narración de voz del sistema"
           >
-            🔊 <span>Voz: Activa</span>
+            <span aria-hidden="true">🔊</span> <span>Voz: Activa</span>
           </button>
         </div>
       </div>
@@ -106,7 +121,7 @@
   </header>
 
   <!-- Contenedor Dinámico de Vistas Accesibles -->
-  <main id="main-app-container" class="main-content" role="main" tabindex="-1">
+  <main id="contenido-principal" class="main-content" role="main" tabindex="-1">
     <!-- Se inyecta dinámicamente: LoginView -> MatriculaView -> HorarioView -->
   </main>
 
@@ -117,10 +132,10 @@
         <strong>Universidad Tecnológica del Perú (UTP)</strong> • Portal de Matrícula Inclusiva
       </div>
       <div>
-        ♿ Certificación de Diseño <strong>WCAG 2.1 Nivel AAA</strong> • Soporte Hands-Free por Voz
+        <span aria-hidden="true">♿</span> Cumplimiento <strong>WCAG 2.2 Nivel AA / AAA</strong> • Asistente de Voz Accesible
       </div>
       <div style="font-size: var(--font-sm); opacity: 0.85;">
-        Atajos: <kbd>Espacio</kbd> Activar Micrófono | <kbd>Alt + P</kbd> Pausar Voz | <kbd>Alt + R</kbd> Repetir | <kbd>Alt + C</kbd> Alto Contraste | <kbd>Alt + A</kbd> Ayuda
+        Atajos: <kbd>Esc</kbd> Cancelar Audio | <kbd>Alt + M</kbd> Alternar Asistente | <kbd>Alt + C</kbd> Alto Contraste | <kbd>Alt + A</kbd> Ayuda | <kbd>Espacio</kbd> Alternar Voz
       </div>
     </div>
   </footer>

@@ -29,16 +29,15 @@ export class MatriculaView {
         <div class="welcome-audio-banner" role="region" aria-label="Bienvenida y Orientación de Matrícula" style="margin-bottom: 1.25rem;">
           <div>
             <div class="welcome-banner-text">
-              🏛️ <strong>Bienvenido al Portal de Selección de Matrícula UTP, ${ESTUDIANTE.nombre}.</strong>
+              <span aria-hidden="true">🏛️</span> <strong>Bienvenido al Portal de Selección de Matrícula UTP, ${ESTUDIANTE.nombre}.</strong>
             </div>
             <p style="font-size: var(--font-sm); margin-top: 0.25rem; color: var(--text-secondary);">
-              Lugar: <strong>Portal Oficial de Matrícula 2026-II</strong> • Límite: <strong>${ESTUDIANTE.creditosMaximos} Créditos Máx.</strong> (actualmente <strong>${totalCreditos} seleccionados</strong> en ${this.state.cursosMatriculados.length} asignaturas).
-              <br>
-              <strong>¿Qué deseas hacer a continuación?</strong> Diga: <em>"ver cursos"</em>, <em>"ver créditos"</em>, <em>"filtrar turno mañana"</em>, <em>"ver horario"</em> o <em>"seleccionar 1"</em>.
+              Límite: <strong>${ESTUDIANTE.creditosMaximos} Créditos Máx.</strong> (actualmente <strong>${totalCreditos} seleccionados</strong> en ${this.state.cursosMatriculados.length} asignaturas).
+              Diga <em>"ver cursos"</em>, <em>"ver créditos"</em>, <em>"filtrar turno mañana"</em> o <em>"seleccionar 1"</em>.
             </p>
           </div>
-          <button id="btn-replay-welcome-matricula" class="btn-util btn-contrast-toggle" aria-label="Escuchar bienvenida y opciones por voz">
-            🔊 Escuchar Bienvenida y Opciones
+          <button type="button" id="btn-replay-welcome-matricula" class="btn-util btn-contrast-toggle" aria-label="Escuchar bienvenida y opciones por voz">
+            <span aria-hidden="true">🔊</span> <span>Escuchar Opciones</span>
           </button>
         </div>
 
@@ -48,7 +47,7 @@ export class MatriculaView {
             <div style="font-size: var(--font-sm); text-transform: uppercase; letter-spacing: 1px; color: var(--utp-red); font-weight: 800;">
               Portal de Matrícula UTP • ${ESTUDIANTE.periodo}
             </div>
-            <h1 id="matricula-heading" class="student-info-name">
+            <h1 id="matricula-heading" class="student-info-name" tabindex="-1">
               ${ESTUDIANTE.nombre}
             </h1>
             <div class="student-info-details">
@@ -68,7 +67,7 @@ export class MatriculaView {
         <!-- Alerta de Cruce de Horarios (si existe) -->
         ${this.conflictoActual ? `
           <div class="conflict-alert" role="alert" aria-live="assertive">
-            <span style="font-size: 1.5rem;">⚠️</span>
+            <span aria-hidden="true" style="font-size: 1.5rem;">⚠️</span>
             <div>
               <strong>¡Cruce de horario detectado!</strong> 
               No se puede matricular "${this.conflictoActual.cursoNuevo.nombre}" porque se cruza el día 
@@ -81,7 +80,7 @@ export class MatriculaView {
         <!-- Barra de Filtros Accesibles -->
         <div class="filter-toolbar" role="toolbar" aria-label="Filtro de asignaturas por turno">
           <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <span style="font-weight: 800; font-size: var(--font-base);">🔍 Filtrar Turno:</span>
+            <span style="font-weight: 800; font-size: var(--font-base);"><span aria-hidden="true">🔍</span> Filtrar Turno:</span>
             <div class="filter-btn-group" role="radiogroup" aria-label="Seleccionar Turno">
               <button type="button" class="btn-filter ${this.filtroTurno === 'todos' ? 'active' : ''}" data-turno="todos" role="radio" aria-checked="${this.filtroTurno === 'todos'}">
                 Todos (${CURSOS_CATALOGO.length})
@@ -113,6 +112,7 @@ export class MatriculaView {
                 <article
                   class="course-card ${estaMatriculado ? 'enrolled' : ''}"
                   id="curso-card-${curso.numero}"
+                  tabindex="-1"
                   aria-labelledby="curso-title-${curso.numero}"
                 >
                   <!-- Número destacado para comando de voz -->
@@ -132,7 +132,7 @@ export class MatriculaView {
                       <span class="course-tag"><strong>Sección:</strong> ${curso.seccion}</span>
                     </div>
                     <div class="course-schedule-text">
-                      <span>📅</span>
+                      <span aria-hidden="true">📅</span>
                       <span>${curso.diasHorario}</span>
                       <span style="font-size: var(--font-sm); color: var(--text-secondary); font-weight: normal; margin-left: 0.5rem;">(${curso.aula})</span>
                     </div>
@@ -146,12 +146,12 @@ export class MatriculaView {
                     <button
                       type="button"
                       class="btn-course-action"
-                      style="background-color: var(--bg-main); color: var(--text-primary); border: 2px solid var(--border-color); font-size: var(--font-sm); min-height: 44px; margin-bottom: 0.35rem;"
+                      style="background-color: var(--bg-main); color: var(--text-primary); border: 2px solid var(--border-color); font-size: var(--font-sm); min-height: 48px; margin-bottom: 0.35rem;"
                       data-action="consultar"
                       data-id="${curso.numero}"
                       aria-label="Escuchar qué curso es el número ${curso.numero}, ${curso.nombre}"
                     >
-                      ℹ️ ¿Qué es? [${curso.numero}]
+                      <span aria-hidden="true">ℹ️</span> ¿Qué es? [${curso.numero}]
                     </button>
                     ${estaMatriculado ? `
                       <button
@@ -161,7 +161,7 @@ export class MatriculaView {
                         data-id="${curso.id}"
                         aria-label="Quitar ${curso.nombre} del horario. Curso número ${curso.numero}"
                       >
-                        ❌ Quitar [${curso.numero}]
+                        <span aria-hidden="true">❌</span> Quitar [${curso.numero}]
                       </button>
                     ` : `
                       <button
@@ -171,7 +171,7 @@ export class MatriculaView {
                         data-id="${curso.id}"
                         aria-label="Agregar ${curso.nombre} al horario. Curso número ${curso.numero}"
                       >
-                        ➕ Agregar [${curso.numero}]
+                        <span aria-hidden="true">➕</span> Agregar [${curso.numero}]
                       </button>
                     `}
                   </div>
@@ -184,14 +184,14 @@ export class MatriculaView {
           <aside class="sticky-sidebar" aria-labelledby="sidebar-heading">
             <div class="enrolled-panel-card">
               <h2 id="sidebar-heading" style="font-size: var(--font-xl); font-weight: 800; color: var(--text-primary);">
-                📋 Horario Armado
+                <span aria-hidden="true">📋</span> <span>Horario Armado</span>
               </h2>
               
               <!-- Medidor de Créditos en Tiempo Real -->
               <div class="credits-meter-wrapper" role="region" aria-label="Balance de créditos">
                 <div class="credits-meter-header">
                   <span>Créditos:</span>
-                  <span id="credit-count-label" style="color: var(--utp-red);">${totalCreditos} / ${ESTUDIANTE.creditosMaximos}</span>
+                  <span id="credit-count-label" tabindex="-1" style="color: var(--utp-red);">${totalCreditos} / ${ESTUDIANTE.creditosMaximos}</span>
                 </div>
                 <div
                   class="credits-progress-bar"
@@ -212,7 +212,7 @@ export class MatriculaView {
 
               ${this.state.cursosMatriculados.length === 0 ? `
                 <p style="font-size: var(--font-sm); color: var(--text-secondary); padding: 1rem; text-align: center; border: 1px dashed var(--border-subtle); border-radius: 6px;">
-                  Aún no has agregado ninguna materia. Pronuncie <em>"seleccionar 1"</em> o presione el botón de agregar.
+                  Aún no has agregado materias. Pronuncie <em>"seleccionar 1"</em> o presione el botón de agregar.
                 </p>
               ` : `
                 <ul class="enrolled-courses-mini-list" role="list">
@@ -229,7 +229,7 @@ export class MatriculaView {
                         class="btn-remove-mini"
                         data-action="quitar"
                         data-id="${c.id}"
-                        aria-label="Eliminar ${c.nombre}"
+                        aria-label="Eliminar curso ${c.nombre} del horario"
                       >
                         ✕
                       </button>
@@ -258,7 +258,7 @@ export class MatriculaView {
                   style="width: 100%; justify-content: center;"
                   aria-label="Ver Horario Consolidado"
                 >
-                  👁️ Ver Horario Semanal
+                  <span aria-hidden="true">👁️</span> <span>Ver Horario Semanal</span>
                 </button>
 
                 <button
@@ -268,7 +268,7 @@ export class MatriculaView {
                   style="width: 100%; justify-content: center; font-size: var(--font-sm);"
                   aria-label="Leer pantalla en voz alta"
                 >
-                  📖 Leer Resumen de Pantalla
+                  <span aria-hidden="true">📖</span> <span>Leer Resumen de Pantalla</span>
                 </button>
               </div>
             </div>
@@ -365,13 +365,15 @@ export class MatriculaView {
 
     if (!curso) {
       accessibilityManager.playEarcon("error");
-      speechSynthesisManager.speak(`No se encontró el curso número o nombre "${identificador}". Verifique el número en pantalla del 1 al 6.`, true);
+      speechSynthesisManager.speak(`No se encontró el curso "${identificador}".`, true);
       return;
     }
 
     // Verificar si ya está matriculado
     if (this.state.cursosMatriculados.some(c => c.id === curso.id)) {
-      speechSynthesisManager.speak(`El curso ${curso.nombre} ya se encuentra agregado a tu horario.`, true);
+      speechSynthesisManager.speak(`El curso ${curso.nombre} ya se encuentra agregado.`, true);
+      const card = document.getElementById(`curso-card-${curso.numero}`);
+      if (card) accessibilityManager.setFocus(card, true);
       return;
     }
 
@@ -379,9 +381,8 @@ export class MatriculaView {
     const totalCreditos = this.calcularTotalCreditos();
     if (totalCreditos + curso.creditos > ESTUDIANTE.creditosMaximos) {
       accessibilityManager.playEarcon("error");
-      const exceso = (totalCreditos + curso.creditos) - ESTUDIANTE.creditosMaximos;
       speechSynthesisManager.speak(
-        `Límite excedido. Agregar ${curso.nombre} con ${curso.creditos} créditos superaría el máximo de 22 créditos por ${exceso}. Tienes ${totalCreditos} créditos acumulados.`,
+        `Supera el límite de 22 créditos permitidos.`,
         true
       );
       return;
@@ -400,7 +401,7 @@ export class MatriculaView {
       accessibilityManager.playEarcon("error");
       this.render();
       speechSynthesisManager.speak(
-        `¡Atención! Conflicto de horario. ${curso.nombre} se cruza el día ${cruce.dia} de ${cruce.horario1} con ${cruce.cursoExistente.nombre}. No se agregó.`,
+        `Cruce de horario el ${cruce.dia} con ${cruce.cursoExistente.nombre}. No se agregó.`,
         true
       );
       return;
@@ -413,8 +414,17 @@ export class MatriculaView {
     const nuevosCreditos = this.calcularTotalCreditos();
 
     this.render();
-    accessibilityManager.announcePolite(`Curso ${curso.nombre} agregado. Total acumulado: ${nuevosCreditos} créditos.`);
-    speechSynthesisManager.speak(`Curso número ${curso.numero}, ${curso.nombre}, agregado correctamente. Tienes ahora ${nuevosCreditos} de 22 créditos.`, true);
+
+    // Sincronizar foco físico y desplazamiento suave (Accesibilidad motriz)
+    const card = document.getElementById(`curso-card-${curso.numero}`);
+    if (card) {
+      accessibilityManager.setFocus(card, true);
+      card.classList.add("highlight-card");
+      setTimeout(() => card.classList.remove("highlight-card"), 3000);
+    }
+
+    accessibilityManager.announcePolite(`Curso ${curso.nombre} agregado. Total: ${nuevosCreditos} créditos.`);
+    speechSynthesisManager.speak(`Curso ${curso.numero}, ${curso.nombre}, agregado. Tienes ${nuevosCreditos} créditos.`, true);
   }
 
   quitarCurso(identificador) {
@@ -428,7 +438,7 @@ export class MatriculaView {
 
     if (cursoIndex === -1) {
       accessibilityManager.playEarcon("error");
-      speechSynthesisManager.speak(`El curso indicado no está en tu lista de materias seleccionadas.`, true);
+      speechSynthesisManager.speak(`El curso no está en tu lista de materias seleccionadas.`, true);
       return;
     }
 
@@ -438,17 +448,29 @@ export class MatriculaView {
     const nuevosCreditos = this.calcularTotalCreditos();
 
     this.render();
+
+    // Sincronizar foco físico en la tarjeta del curso retirado
+    const card = document.getElementById(`curso-card-${cursoRemovido.numero}`);
+    if (card) {
+      accessibilityManager.setFocus(card, true);
+    }
+
     accessibilityManager.announcePolite(`Curso ${cursoRemovido.nombre} retirado. Total: ${nuevosCreditos} créditos.`);
-    speechSynthesisManager.speak(`Se ha retirado ${cursoRemovido.nombre}. Te quedan ${nuevosCreditos} créditos acumulados.`, true);
+    speechSynthesisManager.speak(`Curso ${cursoRemovido.nombre} retirado. Te quedan ${nuevosCreditos} créditos.`, true);
   }
 
   setFiltroTurno(turno) {
     this.filtroTurno = turno;
     this.render();
-    const count = this.getCursosFiltrados().length;
     accessibilityManager.playEarcon("success");
+
+    const btn = this.container.querySelector(`[data-turno="${turno}"]`);
+    if (btn) {
+      accessibilityManager.setFocus(btn, true);
+    }
+
     const textoTurno = turno === "todos" ? "todos los turnos" : `turno ${turno}`;
-    speechSynthesisManager.speak(`Filtro aplicado: mostrando ${count} cursos en ${textoTurno}.`, true);
+    speechSynthesisManager.speak(`Filtro aplicado: mostrando ${textoTurno}.`, true);
   }
 
   confirmarMatricula() {
@@ -458,54 +480,48 @@ export class MatriculaView {
       return;
     }
 
+    const btn = document.getElementById("btn-confirm-matricula");
+    if (btn) accessibilityManager.setFocus(btn, true);
+
     const total = this.calcularTotalCreditos();
     accessibilityManager.playEarcon("success");
+    accessibilityManager.announceAssertive(`Matrícula confirmada con ${total} créditos. Abriendo horario oficial.`);
     speechSynthesisManager.speak(
-      `¡Matrícula confirmada con éxito! Has inscrito ${this.state.cursosMatriculados.length} asignaturas por un total de ${total} créditos. Cargando tu horario oficial.`,
-      true,
-      () => {
-        this.onNavigateToHorario();
-      }
+      `Matrícula confirmada con ${total} créditos. Abriendo horario oficial.`,
+      true
     );
+    this.onNavigateToHorario();
   }
 
   /**
-   * Narración automática obligatoria al ingresar a la pantalla de Matrícula:
-   * 1. Lugar al que ha ingresado
-   * 2. Bienvenida con su nombre completo
-   * 3. Total de créditos (máximos y actuales)
-   * 4. Pregunta orientadora con ejemplos de qué hacer a continuación
+   * Narración concisa de bienvenida al ingresar a la pantalla de Matrícula (máximo 1 o 2 oraciones)
    */
   narrarBienvenidaIngreso() {
     const totalCreditos = this.calcularTotalCreditos();
-    const cursosCount = this.state.cursosMatriculados.length;
-    const disponibles = ESTUDIANTE.creditosMaximos - totalCreditos;
-
-    const mensaje = `Has ingresado al Portal de Selección y Matrícula de Asignaturas de la Universidad Tecnológica del Perú para el periodo ${ESTUDIANTE.periodo}. ` +
-      `¡Bienvenido, ${ESTUDIANTE.nombre}! ` +
-      `Cuentas con un límite académico de ${ESTUDIANTE.creditosMaximos} créditos máximos. Actualmente tienes ${totalCreditos} créditos registrados en ${cursosCount} ${cursosCount === 1 ? 'asignatura' : 'asignaturas'}, quedándote ${disponibles} créditos disponibles. ` +
-      `¿Qué deseas hacer a continuación? Puedes decir por ejemplo: 'ver cursos' para escuchar las asignaturas, 'filtrar turno mañana o noche', 'ver créditos', 'ver horario' para revisar la semana, o 'seleccionar' seguido del número de la materia.`;
+    const mensaje = `Bienvenido a matrícula, ${ESTUDIANTE.nombre}. Tienes ${totalCreditos} de ${ESTUDIANTE.creditosMaximos} créditos. Diga 'ver cursos' o el número a elegir.`;
 
     speechSynthesisManager.speak(mensaje, true);
-    accessibilityManager.announcePolite(`Bienvenido al Portal de Matrícula UTP, ${ESTUDIANTE.nombre}. ${totalCreditos} de ${ESTUDIANTE.creditosMaximos} créditos.`);
+    accessibilityManager.announcePolite(`Bienvenido, ${ESTUDIANTE.nombre}. ${totalCreditos} de ${ESTUDIANTE.creditosMaximos} créditos.`);
   }
 
   narrarCreditos() {
     const total = this.calcularTotalCreditos();
-    const disponibles = ESTUDIANTE.creditosMaximos - total;
     const count = this.state.cursosMatriculados.length;
-    const mensaje = `Balance de créditos: Tienes ${total} créditos acumulados en ${count} materias, de un límite máximo de ${ESTUDIANTE.creditosMaximos} créditos permitidos. Te quedan ${disponibles} créditos libres para matricular. ¿Deseas 'ver cursos' o 'ver horario'?`;
+    const meter = document.getElementById("credit-count-label");
+    if (meter) accessibilityManager.setFocus(meter, true);
+
+    const mensaje = `Tienes ${total} de 22 créditos en ${count} materias seleccionadas.`;
     accessibilityManager.playEarcon("listen");
     speechSynthesisManager.speak(mensaje, true);
   }
 
   narrarOpciones() {
-    const mensaje = `¿Qué deseas hacer a continuación? Opciones disponibles: puedes decir 'ver cursos' para conocer las asignaturas del catálogo, 'filtrar turno mañana' o 'noche', 'ver créditos' para tu balance académico, 'ver horario' para revisar la distribución semanal, o 'seleccionar' seguido del número de materia.`;
+    const mensaje = `Diga 'ver cursos', 'ver horario' o 'agrega' seguido del número de asignatura.`;
     speechSynthesisManager.speak(mensaje, true);
   }
 
   /**
-   * Consulta y narra con máximo detalle qué curso era un número específico (ej. "qué curso era el número 4")
+   * Consulta y narra con concisión qué curso es un número específico
    * @param {number|string} identificador
    */
   consultarCurso(identificador) {
@@ -519,31 +535,27 @@ export class MatriculaView {
 
     if (!curso) {
       accessibilityManager.playEarcon("error");
-      speechSynthesisManager.speak(`No se encontró el curso número o nombre "${identificador}". Verifique en la lista de asignaturas del 1 al 6.`, true);
+      speechSynthesisManager.speak(`No se encontró el curso "${identificador}".`, true);
       return;
     }
 
     accessibilityManager.playEarcon("listen");
 
-    // Resaltar visualmente la tarjeta del curso y hacer scroll accesible
+    // Resaltar visualmente la tarjeta del curso, enfocar y hacer scroll accesible
     const card = document.getElementById(`curso-card-${curso.numero}`);
     if (card) {
-      card.scrollIntoView({ behavior: "smooth", block: "center" });
+      accessibilityManager.setFocus(card, true);
       card.classList.add("highlight-card");
-      setTimeout(() => card.classList.remove("highlight-card"), 5000);
+      setTimeout(() => card.classList.remove("highlight-card"), 3000);
     }
 
     const estaMatriculado = this.state.cursosMatriculados.some(c => c.id === curso.id);
 
-    let mensaje = `El curso número ${curso.numero} es ${curso.nombre}, código ${curso.codigo}. ` +
-      `Tiene ${curso.creditos} créditos y pertenece al turno ${curso.turno}. ` +
-      `Se dicta ${curso.diasTextoVoz}, en el ${curso.aula}, con el docente ${curso.docente}. Modalidad: ${curso.modalidad}. ` +
-      `Descripción temática: ${curso.descripcion}. `;
-
+    let mensaje = `Curso ${curso.numero}: ${curso.nombre}, ${curso.creditos} créditos, turno ${curso.turno}, aula ${curso.aula}. `;
     if (estaMatriculado) {
-      mensaje += `Esta asignatura ya está en tu horario armado. Si deseas retirarla, di 'quita ${curso.numero}'.`;
+      mensaje += `Ya está en tu horario armado.`;
     } else {
-      mensaje += `¿Deseas agregarlo a tu horario? Puedes decir 'agrega ${curso.numero}' o presionar el botón agregar.`;
+      mensaje += `Diga 'agrega ${curso.numero}' para inscribirlo.`;
     }
 
     speechSynthesisManager.speak(mensaje, true);
@@ -553,17 +565,15 @@ export class MatriculaView {
   narrarResumenPantalla() {
     const total = this.calcularTotalCreditos();
     const count = this.state.cursosMatriculados.length;
-    let mensaje = `Estás en el catálogo de matrícula. Tienes ${count} asignaturas seleccionadas con ${total} de 22 créditos. `;
-    mensaje += `Hay ${CURSOS_CATALOGO.length} asignaturas en el catálogo: `;
-    CURSOS_CATALOGO.forEach(c => {
-      mensaje += `Número ${c.numero}: ${c.nombre}, de ${c.creditos} créditos, ${c.diasTextoVoz}. `;
-    });
-    mensaje += `Para elegir una asignatura, diga por ejemplo: 'agrega uno' o 'agrega el curso cuatro'. Para consultar qué es un curso, diga 'qué curso era el número cuatro'. Para ver tu horario, diga 'ver horario'.`;
+    let mensaje = `Tienes ${count} asignaturas con ${total} créditos. Diga 'agrega' seguido del número de curso del 1 al 6.`;
     speechSynthesisManager.speak(mensaje, true);
   }
 
   handleVoiceCommand(action, payload) {
-    if (action === "CONSULTAR_CURSO") {
+    if (action === "ENFOCAR_NOMBRE") {
+      accessibilityManager.setFocus("matricula-heading", true);
+      speechSynthesisManager.speak(`Perfil de ${ESTUDIANTE.nombre} enfocado.`, true);
+    } else if (action === "CONSULTAR_CURSO") {
       this.consultarCurso(payload);
     } else if (action === "SELECCIONAR_CURSO") {
       this.agregarCurso(payload);

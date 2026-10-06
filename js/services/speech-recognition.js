@@ -13,6 +13,7 @@ class SpeechRecognitionManager {
     this.isSupported = false;
     this.isActive = true; // Activo por defecto según requerimiento
     this.isListening = false;
+    this.isSpeakingPaused = false; // Bandera para eliminar eco y auto-escucha
     this.currentView = "login"; // "login" | "matricula" | "horario"
     this.commandListeners = [];
     this.manualStop = false;
@@ -38,6 +39,9 @@ class SpeechRecognitionManager {
       this.recognition.lang = "es-PE"; // Español de Perú
       this.recognition.maxAlternatives = 1;
 
+      // Vincular con el sintetizador para silenciar el micrófono mientras habla
+      speechSynthesisManager.setRecognitionController(this);
+
       this.setupEvents();
     } catch (err) {
       console.error("Error al inicializar SpeechRecognition:", err);
@@ -54,6 +58,11 @@ class SpeechRecognitionManager {
     };
 
     this.recognition.onresult = (event) => {
+      // Si el sintetizador está hablando, ignorar cualquier audio residual para evitar auto-escucha
+      if (this.isSpeakingPaused) {
+        return;
+      }
+
       const lastIndex = event.results.length - 1;
       const transcript = event.results[lastIndex][0].transcript.trim().toLowerCase();
       console.log("[Voz Detectada]:", transcript);
@@ -65,7 +74,7 @@ class SpeechRecognitionManager {
       this.processIntent(transcript);
 
       setTimeout(() => {
-        if (this.isActive && this.isListening) {
+        if (this.isActive && this.isListening && !this.isSpeakingPaused) {
           this.updateStatusUI("listening", "Escuchando comandos...");
         }
       }, 1000);
@@ -78,8 +87,8 @@ class SpeechRecognitionManager {
         this.updateStatusUI("muted", "Micrófono bloqueado (Permiso denegado)");
         accessibilityManager.announceAssertive("Permiso de micrófono no otorgado. Puede usar el sistema con teclado o pantalla táctil.");
       } else if (event.error === "no-speech") {
-        // Silencio normal, continuar escuchando si está activo
-        if (this.isActive && !this.manualStop) {
+        // Silencio normal, continuar escuchando si está activo y no silenciado
+        if (this.isActive && !this.manualStop && !this.isSpeakingPaused) {
           this.updateStatusUI("listening", "Escuchando comandos...");
         }
       } else {
@@ -89,23 +98,65 @@ class SpeechRecognitionManager {
 
     this.recognition.onend = () => {
       this.isListening = false;
-      // Reanudar automáticamente si el asistente sigue encendido y no fue apagado manualmente
+      // IMPORTANTE: Si el sintetizador está emitiendo voz, NO reanudar aquí para evitar eco
+      if (this.isSpeakingPaused) {
+        return;
+      }
+
+      // Reanudar automáticamente solo si el asistente sigue encendido y no fue apagado manualmente
       if (this.isActive && !this.manualStop) {
-        try {
-          this.recognition.start();
-        } catch (e) {
-          // Ignorar si ya estaba arrancando
-        }
+        setTimeout(() => {
+          if (this.isActive && !this.manualStop && !this.isSpeakingPaused) {
+            try {
+              this.recognition.start();
+            } catch (e) {
+              // Ignorar si ya arrancó
+            }
+          }
+        }, 150);
       } else {
         this.updateStatusUI("muted", "Asistente Silenciado");
       }
     };
   }
 
+  /**
+   * Pausar temporalmente el reconocimiento mientras el sintetizador habla (Elimina eco)
+   */
+  pauseForSpeaking() {
+    if (!this.recognition || !this.isActive) return;
+    this.isSpeakingPaused = true;
+    try {
+      this.recognition.abort();
+    } catch (e) {}
+    this.updateStatusUI("processing", "Asistente hablando...");
+  }
+
+  /**
+   * Reactivar el reconocimiento de voz tras finalizar el habla del sintetizador
+   */
+  resumeAfterSpeaking() {
+    this.isSpeakingPaused = false;
+    if (!this.recognition || !this.isActive || this.manualStop) {
+      this.updateStatusUI("muted", "Asistente Silenciado");
+      return;
+    }
+
+    // Pequeño margen para asegurar que el eco de los parlantes se ha disipado
+    setTimeout(() => {
+      if (this.isActive && !this.manualStop && !this.isSpeakingPaused) {
+        try {
+          this.recognition.start();
+        } catch (e) {}
+      }
+    }, 200);
+  }
+
   start() {
     if (!this.isSupported || !this.recognition) return;
     this.manualStop = false;
     this.isActive = true;
+    this.isSpeakingPaused = false;
     try {
       this.recognition.start();
     } catch (e) {
@@ -117,6 +168,7 @@ class SpeechRecognitionManager {
     if (!this.recognition) return;
     this.manualStop = true;
     this.isActive = false;
+    this.isSpeakingPaused = false;
     try {
       this.recognition.stop();
     } catch (e) {}
@@ -128,9 +180,10 @@ class SpeechRecognitionManager {
   toggle() {
     if (this.isActive) {
       this.stop();
+      speechSynthesisManager.stop();
     } else {
       this.start();
-      speechSynthesisManager.speak("Asistente por voz activado. Diga su comando o presione barra espaciadora.", false);
+      speechSynthesisManager.speak("Asistente por voz activado.", false);
     }
     this.updateAssistantButtonUI();
   }
@@ -170,7 +223,54 @@ class SpeechRecognitionManager {
       return;
     }
 
-    if (cleanText.includes("ayuda") || cleanText.includes("qué puedo decir") || cleanText.includes("comandos")) {
+    // Comandos Globales Prioritarios (Asistencia Auditiva y de Orientación)
+    if (
+      cleanText === "probar" ||
+      cleanText.includes("probar audio") ||
+      cleanText.includes("probar sonido") ||
+      cleanText.includes("prueba de sonido") ||
+      cleanText.includes("probar voz")
+    ) {
+      accessibilityManager.executeSoundTest();
+      return;
+    }
+
+    if (
+      cleanText.includes("leer comandos") ||
+      cleanText.includes("qué puedo decir") ||
+      cleanText.includes("que puedo decir") ||
+      cleanText.includes("cuáles son los comandos") ||
+      cleanText.includes("cuales son los comandos") ||
+      cleanText.includes("lista de comandos")
+    ) {
+      this.leerComandosPantalla();
+      return;
+    }
+
+    if (
+      cleanText.includes("dónde estoy") ||
+      cleanText.includes("donde estoy") ||
+      cleanText.includes("en qué pantalla estoy") ||
+      cleanText.includes("ubicación")
+    ) {
+      this.narrarDondeEstoy();
+      return;
+    }
+
+    if (
+      cleanText.includes("qué hace este botón") ||
+      cleanText.includes("que hace este boton") ||
+      cleanText.includes("explicar botón") ||
+      cleanText.includes("explicar boton") ||
+      cleanText.includes("qué hace el botón") ||
+      cleanText.includes("que hace el boton") ||
+      cleanText.includes("describir botón")
+    ) {
+      this.explicarElementoEnfocado();
+      return;
+    }
+
+    if (cleanText.includes("ayuda") || cleanText.includes("comandos")) {
       this.dispatchCommand("AYUDA");
       return;
     }
@@ -192,6 +292,16 @@ class SpeechRecognitionManager {
 
     // 2. Comandos en Pantalla 1: Login
     if (this.currentView === "login") {
+      // Navegación de foco por voz (Accesibilidad motriz)
+      if (cleanText.includes("ir a código") || cleanText.includes("ir a codigo") || cleanText === "código" || cleanText === "codigo") {
+        this.dispatchCommand("ENFOCAR_CODIGO");
+        return;
+      }
+      if (cleanText.includes("ir a contraseña") || cleanText.includes("ir a clave") || cleanText === "contraseña" || cleanText === "clave") {
+        this.dispatchCommand("ENFOCAR_PASSWORD");
+        return;
+      }
+
       // 1. Limpiar o borrar código
       if (cleanText.includes("borrar código") || cleanText.includes("limpiar código") || cleanText.includes("borrar codigo") || cleanText === "borrar" || cleanText === "limpiar") {
         this.dispatchCommand("BORRAR_CODIGO");
@@ -226,8 +336,13 @@ class SpeechRecognitionManager {
 
     // 3. Comandos en Pantalla 2: Selección y Matrícula de Asignaturas
     if (this.currentView === "matricula") {
+      // Foco en perfil o encabezado
+      if (cleanText.includes("ir a nombre") || cleanText.includes("nombre") || cleanText.includes("mi perfil")) {
+        this.dispatchCommand("ENFOCAR_NOMBRE");
+        return;
+      }
+
       // 1. Consultar / Recordar qué curso era un número específico:
-      // "qué curso era el número 4", "qué curso es el 4", "cuál es el curso 4", "información del curso 4", "de qué trata el curso 4", etc.
       const tieneTriggerConsulta = /(?:qué|que|cuál|cual|cómo|como|recordar|recuerda|recuérdame|información|informacion|info|detalles|detalle|de qué trata|de que trata)/i.test(cleanText);
       const mencionaCurso = /(?:curso|materia|asignatura|número|numero|era|es|había|habia|trata)/i.test(cleanText);
       if (tieneTriggerConsulta && mencionaCurso) {
@@ -283,7 +398,7 @@ class SpeechRecognitionManager {
       }
 
       // Consultar créditos disponibles y acumulados
-      if (cleanText.includes("ver créditos") || cleanText.includes("ver creditos") || cleanText.includes("mis créditos") || cleanText.includes("mis creditos") || cleanText.includes("cuántos créditos") || cleanText.includes("cuantos creditos") || cleanText.includes("consultar créditos") || cleanText === "créditos" || cleanText === "creditos") {
+      if (cleanText.includes("ver créditos") || cleanText.includes("ver creditos") || cleanText.includes("mis créditos") || cleanText.includes("mis creditos") || cleanText.includes("cuántos créditos") || cleanText.includes("cuantos creditos") || cleanText.includes("consultar créditos") || cleanText === "créditos" || cleanText === "creditos" || cleanText.includes("ir a créditos")) {
         this.dispatchCommand("VER_CREDITOS");
         return;
       }
@@ -299,7 +414,7 @@ class SpeechRecognitionManager {
         return;
       }
 
-      if (cleanText.includes("confirmar matrícula") || cleanText.includes("guardar matrícula") || cleanText.includes("finalizar matrícula") || cleanText.includes("matricular")) {
+      if (cleanText.includes("confirmar matrícula") || cleanText.includes("guardar matrícula") || cleanText.includes("finalizar matrícula") || cleanText.includes("registrar matrícula") || cleanText.includes("matricular")) {
         this.dispatchCommand("CONFIRMAR_MATRICULA");
         return;
       }
@@ -347,9 +462,14 @@ class SpeechRecognitionManager {
       }
     }
 
-    // Si el comando no se entendió claramente
+    // Evitar bucles de ruido ambiental o frases insignificantes
+    if (cleanText.length < 3) {
+      return;
+    }
+
+    // Si el comando no se entendió claramente, feedback conciso
     accessibilityManager.playEarcon("error");
-    speechSynthesisManager.speak("Comando no reconocido. Diga 'ayuda' para escuchar los comandos disponibles.", false);
+    speechSynthesisManager.speak("Comando no reconocido. Diga 'ayuda' para escuchar las opciones.", false);
   }
 
   /**
@@ -509,6 +629,93 @@ class SpeechRecognitionManager {
         ? `🎙️ <span>Asistente: ACTIVO</span>`
         : `🛑 <span>Asistente: APAGADO</span>`;
     }
+  }
+
+  /**
+   * Lee claramente la lista de comandos disponibles en la pantalla actual
+   */
+  leerComandosPantalla() {
+    let msg = "";
+    if (this.currentView === "login") {
+      msg = "Comandos en Login: Diga 'dictar código' seguido de sus números, 'borrar código', 'repetir código', 'solicitar pin', 'probar sonido', 'dónde estoy', o 'ingresar'.";
+    } else if (this.currentView === "matricula") {
+      msg = "Comandos en Matrícula: Diga 'ver cursos', 'ver créditos', 'filtrar turno mañana, tarde o noche', 'seleccionar' o 'quitar' seguido del número de asignatura, 'probar sonido', o 'confirmar matrícula'.";
+    } else if (this.currentView === "horario") {
+      msg = "Comandos en Horario: Diga 'narrar todo', 'qué me toca el lunes', 'pausar', 'repetir', 'descargar horario', 'probar sonido', o 'volver a matrícula'.";
+    } else {
+      msg = "Comandos disponibles: Diga 'probar sonido', 'dónde estoy', 'alto contraste', 'aumentar texto', o 'silenciar voz'.";
+    }
+
+    this.pauseForSpeaking();
+    speechSynthesisManager.speak(msg, true, () => {
+      this.resumeAfterSpeaking();
+    });
+  }
+
+  /**
+   * Indica con precisión la ubicación, vista actual y el elemento actualmente enfocado
+   */
+  narrarDondeEstoy() {
+    const nombresVistas = {
+      login: "Pantalla de Inicio de Sesión y Acceso a Matrícula",
+      matricula: "Catálogo de Selección y Matrícula de Asignaturas",
+      horario: "Horario Oficial Consolidado"
+    };
+
+    const vistaActual = nombresVistas[this.currentView] || this.currentView;
+    const activeEl = document.activeElement;
+    let infoElemento = "";
+
+    if (activeEl && activeEl !== document.body && activeEl !== document.documentElement) {
+      const desc = accessibilityManager.describeElement(activeEl);
+      if (desc && desc.nombre) {
+        infoElemento = ` El elemento enfocado actualmente es: ${desc.rol} ${desc.nombre}.`;
+      }
+    }
+
+    const msg = `Te encuentras en: ${vistaActual}.${infoElemento} Diga 'leer comandos' para escuchar las acciones posibles.`;
+    this.pauseForSpeaking();
+    speechSynthesisManager.speak(msg, true, () => {
+      this.resumeAfterSpeaking();
+    });
+  }
+
+  /**
+   * Explica en detalle qué hace el botón o elemento interactivo actualmente enfocado
+   */
+  explicarElementoEnfocado() {
+    const activeEl = document.activeElement;
+    if (!activeEl || activeEl === document.body || activeEl === document.documentElement) {
+      const msg = "Ningún botón o control interactivo tiene el foco actualmente. Use la tecla Tabulador para navegar entre elementos.";
+      this.pauseForSpeaking();
+      speechSynthesisManager.speak(msg, true, () => {
+        this.resumeAfterSpeaking();
+      });
+      return;
+    }
+
+    // Caso específico para botones Probar
+    if (activeEl.id === "btn-test-sound" || activeEl.classList.contains("btn-test-command") || activeEl.textContent.trim().toLowerCase() === "probar") {
+      const msg = "Botón Probar: ejecuta una prueba del sintetizador de voz y verifica el volumen del sistema.";
+      this.pauseForSpeaking();
+      speechSynthesisManager.speak(msg, true, () => {
+        this.resumeAfterSpeaking();
+      });
+      return;
+    }
+
+    const desc = accessibilityManager.describeElement(activeEl);
+    let msg = "";
+    if (desc) {
+      msg = `${desc.rol} ${desc.nombre}. ${desc.descripcion || "Permite activar la acción correspondiente."}`;
+    } else {
+      msg = "Elemento interactivo seleccionado.";
+    }
+
+    this.pauseForSpeaking();
+    speechSynthesisManager.speak(msg, true, () => {
+      this.resumeAfterSpeaking();
+    });
   }
 }
 

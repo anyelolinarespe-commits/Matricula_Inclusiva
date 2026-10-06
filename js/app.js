@@ -13,7 +13,7 @@ import { HorarioView } from "./views/horario-view.js";
 
 class App {
   constructor() {
-    this.container = document.getElementById("main-app-container");
+    this.container = document.getElementById("contenido-principal") || document.getElementById("main-app-container");
     this.state = {
       isLoggedIn: false,
       currentView: "login", // "login" | "matricula" | "horario"
@@ -73,10 +73,19 @@ class App {
 
   setupGlobalKeyboardShortcuts() {
     window.addEventListener("keydown", (e) => {
+      // Control de interrupción inmediato por tecla Escape (WCAG 1.4.2)
+      if (e.key === "Escape") {
+        e.preventDefault();
+        window.speechSynthesis.cancel();
+        speechSynthesisManager.stop();
+        accessibilityManager.announcePolite("Narración detenida");
+        return;
+      }
+
       // Ignorar ciertas teclas si el foco está en un campo de texto editable y no es un atajo con Alt
       const isInput = ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName);
 
-      // Atajo Barra Espaciadora: Push-to-Talk / Reactivar escucha cuando no se está escribiendo texto
+      // Atajo Barra Espaciadora: Push-to-Talk / Alternar escucha cuando no se está escribiendo texto
       if (e.code === "Space" && !isInput) {
         e.preventDefault();
         speechRecognitionManager.toggle();
@@ -101,6 +110,7 @@ class App {
             this.activeViewInstance.narrarDia("hoy");
           }
         } else if (e.key === "m" || e.key === "M") {
+          // Atajo global obligatorio WCAG: Alt + M para alternar asistente
           e.preventDefault();
           speechRecognitionManager.toggle();
         } else if (e.key === "c" || e.key === "C") {

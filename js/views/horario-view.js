@@ -36,7 +36,7 @@ export class HorarioView {
             <div style="font-size: var(--font-sm); text-transform: uppercase; color: var(--utp-red); font-weight: 800;">
               Confirmación Académica • UTP ${ESTUDIANTE.periodo}
             </div>
-            <h1 id="horario-heading" style="font-size: var(--font-2xl); font-weight: 800; color: var(--text-primary);">
+            <h1 id="horario-heading" tabindex="-1" style="font-size: var(--font-2xl); font-weight: 800; color: var(--text-primary);">
               Horario Oficial Consolidado
             </h1>
             <p style="font-size: var(--font-base); color: var(--text-secondary); margin-top: 0.25rem;">
@@ -53,7 +53,7 @@ export class HorarioView {
               class="btn-audio-control primary"
               aria-label="Narrar Horario Completo en Voz Alta. Atajo Alt más R"
             >
-              🔊 <span>Narrar Todo [Alt + R]</span>
+              <span aria-hidden="true">🔊</span> <span>Narrar Todo [Alt + R]</span>
             </button>
 
             <button
@@ -62,7 +62,7 @@ export class HorarioView {
               class="btn-audio-control"
               aria-label="Pausar o Reanudar Audio. Atajo Alt más P"
             >
-              ⏸️ <span>Pausar / Reanudar [Alt + P]</span>
+              <span aria-hidden="true">⏸️</span> <span>Pausar / Reanudar [Alt + P]</span>
             </button>
 
             <button
@@ -71,7 +71,7 @@ export class HorarioView {
               class="btn-audio-control"
               aria-label="Narrar clases de hoy. Atajo Alt más H"
             >
-              📅 <span>Narrar Solo Hoy [Alt + H]</span>
+              <span aria-hidden="true">📅</span> <span>Narrar Solo Hoy [Alt + H]</span>
             </button>
           </div>
         </div>
@@ -84,7 +84,7 @@ export class HorarioView {
               type="button"
               class="btn-util btn-day-narrate"
               data-dia="${dia}"
-              style="border: 1px solid var(--border-color); border-radius: 4px; padding: 0.35rem 0.75rem; font-size: var(--font-sm);"
+              style="border: 1px solid var(--border-color); border-radius: 4px; padding: 0.5rem 0.85rem; font-size: var(--font-sm); min-height: 48px;"
               aria-label="Narrar clases del ${dia}"
             >
               ${dia}
@@ -93,9 +93,9 @@ export class HorarioView {
         </div>
 
         <!-- 1. Visualización: Grilla Semanal Visual de Alto Contraste -->
-        <div class="schedule-grid-wrapper" role="region" aria-label="Grilla Gráfica Semanal de Alto Contraste">
+        <div class="schedule-grid-wrapper" role="region" aria-label="Grilla Gráfica Semanal de Alto Contraste" tabindex="-1">
           <h2 style="font-size: var(--font-lg); font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">
-            📊 Grilla Semanal Visual
+            <span aria-hidden="true">📊</span> <span>Grilla Semanal Visual</span>
           </h2>
           <table class="schedule-grid-table" aria-label="Tabla de distribución horaria de lunes a sábado">
             <thead>
@@ -223,10 +223,14 @@ export class HorarioView {
     `;
 
     this.bindEvents();
-    this.autoNarrarHorarioCompleto();
+    // No reproducir bucle automático; el usuario solicita la voz con el botón o comando
+    accessibilityManager.announcePolite("Horario oficial cargado. Presione Alt más R para narrar o examine la grilla semanal.");
   }
 
   autoNarrarHorarioCompleto() {
+    const btn = document.getElementById("btn-narrar-todo");
+    if (btn) accessibilityManager.setFocus(btn, true);
+
     const texto = speechSynthesisManager.generarNarracionHorario(this.state.cursosMatriculados);
     speechSynthesisManager.speak(texto, true);
   }
@@ -238,6 +242,10 @@ export class HorarioView {
       const diasArr = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
       diaElegido = diasArr[hoyNum] || "Lunes";
     }
+
+    const btnDia = this.container.querySelector(`[data-dia="${diaElegido}"]`);
+    if (btnDia) accessibilityManager.setFocus(btnDia, true);
+
     const texto = speechSynthesisManager.generarNarracionHorario(this.state.cursosMatriculados, diaElegido);
     accessibilityManager.playEarcon("listen");
     speechSynthesisManager.speak(texto, true);
@@ -303,13 +311,19 @@ export class HorarioView {
   }
 
   descargarPDF() {
+    const btn = document.getElementById("btn-download-pdf");
+    if (btn) accessibilityManager.setFocus(btn, true);
+
     accessibilityManager.playEarcon("success");
-    speechSynthesisManager.speak("Abriendo ventana de impresión accesible y generación de PDF.", true, () => {
+    speechSynthesisManager.speak("Generando documento accesible de horario.", true, () => {
       window.print();
     });
   }
 
   descargarTextoAccesible() {
+    const btn = document.getElementById("btn-download-txt");
+    if (btn) accessibilityManager.setFocus(btn, true);
+
     const texto = speechSynthesisManager.generarNarracionHorario(this.state.cursosMatriculados);
     const contenido = `========================================================\n` +
       `UNIVERSIDAD TECNOLÓGICA DEL PERÚ (UTP) - MATRÍCULA ACCESIBLE\n` +
@@ -325,7 +339,7 @@ export class HorarioView {
         `   Horario: ${c.diasHorario}\n` +
         `   Aula: ${c.aula} | Docente: ${c.docente}\n`
       ).join("\n") +
-      `\nGenerado por el Sistema de Matrícula Accesible UTP (WCAG 2.1 AAA)\n`;
+      `\nGenerado por el Sistema de Matrícula Accesible UTP (WCAG 2.2 AA)\n`;
 
     const blob = new Blob([contenido], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -338,7 +352,7 @@ export class HorarioView {
     URL.revokeObjectURL(url);
 
     accessibilityManager.playEarcon("success");
-    speechSynthesisManager.speak("Archivo de texto accesible descargado con éxito.", true);
+    speechSynthesisManager.speak("Archivo descargado con éxito.", true);
   }
 
   handleVoiceCommand(action, payload) {
@@ -349,11 +363,17 @@ export class HorarioView {
     } else if (action === "DESCARGAR_HORARIO") {
       this.descargarPDF();
     } else if (action === "VOLVER_MATRICULA") {
+      const btn = document.getElementById("btn-back-to-matricula");
+      if (btn) accessibilityManager.setFocus(btn, true);
       speechSynthesisManager.stop();
       this.onNavigateBack();
+    } else if (action === "ENFOCAR_GRILLA") {
+      const grilla = this.container.querySelector(".schedule-grid-wrapper");
+      if (grilla) accessibilityManager.setFocus(grilla, true);
+      speechSynthesisManager.speak("Grilla semanal enfocada.", true);
     } else if (action === "AYUDA") {
       speechSynthesisManager.speak(
-        "Comandos en esta pantalla: 'narrar todo', 'qué me toca el lunes o cualquier día', 'pausar', 'repetir', 'descargar horario', o 'volver'.",
+        "Diga 'narrar todo', 'qué tengo el lunes', 'descargar horario' o 'volver'.",
         true
       );
     }

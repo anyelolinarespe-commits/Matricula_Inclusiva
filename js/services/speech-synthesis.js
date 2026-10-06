@@ -14,8 +14,14 @@ class SpeechSynthesisManager {
     this.isEnabled = true;
     this.lastSpokenText = "";
     this.isPausedState = false;
+    this.recognitionController = null;
+    this.activeUtterances = new Set();
 
     this.initVoices();
+  }
+
+  setRecognitionController(controller) {
+    this.recognitionController = controller;
   }
 
   initVoices() {
@@ -43,21 +49,23 @@ class SpeechSynthesisManager {
   }
 
   /**
-   * Narrar un texto en lenguaje natural
-   * @param {string} text - Texto a pronunciar
-   * @param {boolean} interrupt - Si es true, interrumpe lo que esté hablando actualmente
+   * Narrar un texto en lenguaje natural sin eco ni bucle infinito
+   * @param {string} text - Texto a pronunciar (máximo 1 o 2 oraciones)
+   * @param {boolean} interrupt - Si es true, cancela el habla anterior
    * @param {Function} onEndCallback - Callback al finalizar
    */
   speak(text, interrupt = true, onEndCallback = null) {
     if (!this.isEnabled || !this.synth) {
       // De todos modos anunciarlo por lector de pantalla
       accessibilityManager.announcePolite(text);
+      if (typeof onEndCallback === "function") {
+        try { onEndCallback(); } catch (e) { console.error(e); }
+      }
       return;
     }
 
     if (interrupt) {
-      this.synth.cancel();
-      this.isPausedState = false;
+      this.cancelImmediate();
     }
 
     this.lastSpokenText = text;
@@ -65,28 +73,63 @@ class SpeechSynthesisManager {
     // Anunciar también en la región accesible ARIA Live
     accessibilityManager.announcePolite(text);
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.voice = this.selectedVoice;
-    utterance.lang = this.selectedVoice ? this.selectedVoice.lang : "es-PE";
-    utterance.rate = 1.05; // Velocidad óptima de dicción en español
-    utterance.pitch = 1.0;
+    // Pausar temporalmente el reconocimiento para eliminar eco y auto-escucha
+    if (this.recognitionController && typeof this.recognitionController.pauseForSpeaking === "function") {
+      this.recognitionController.pauseForSpeaking();
+    }
 
-    utterance.onend = () => {
-      this.isPausedState = false;
-      this.updateAudioIndicator(false);
-      if (onEndCallback) onEndCallback();
-    };
-
-    utterance.onerror = (e) => {
-      // Ignorar errores por cancelación voluntaria
-      if (e.error !== "canceled" && e.error !== "interrupted") {
-        console.warn("Error en SpeechSynthesis:", e);
+    let callbackExecuted = false;
+    const executeCallback = () => {
+      if (!callbackExecuted) {
+        callbackExecuted = true;
+        if (typeof onEndCallback === "function") {
+          try { onEndCallback(); } catch (e) { console.error(e); }
+        }
       }
-      this.updateAudioIndicator(false);
     };
 
-    this.updateAudioIndicator(true);
-    this.synth.speak(utterance);
+    try {
+      const utterance = new SpeechSynthesisUtterance(text);
+      if (!this.activeUtterances) {
+        this.activeUtterances = new Set();
+      }
+      this.activeUtterances.add(utterance);
+
+      utterance.voice = this.selectedVoice;
+      utterance.lang = this.selectedVoice ? this.selectedVoice.lang : "es-PE";
+      utterance.rate = 1.05; // Velocidad óptima de dicción en español
+      utterance.pitch = 1.0;
+
+      utterance.onend = () => {
+        this.isPausedState = false;
+        this.updateAudioIndicator(false);
+        this.activeUtterances.delete(utterance);
+        // Reactivar reconocimiento tras finalizar el habla
+        if (this.recognitionController && typeof this.recognitionController.resumeAfterSpeaking === "function") {
+          this.recognitionController.resumeAfterSpeaking();
+        }
+        executeCallback();
+      };
+
+      utterance.onerror = (e) => {
+        this.isPausedState = false;
+        this.updateAudioIndicator(false);
+        this.activeUtterances.delete(utterance);
+        if (this.recognitionController && typeof this.recognitionController.resumeAfterSpeaking === "function") {
+          this.recognitionController.resumeAfterSpeaking();
+        }
+        if (e.error !== "canceled" && e.error !== "interrupted") {
+          console.warn("Error en SpeechSynthesis:", e);
+        }
+        executeCallback();
+      };
+
+      this.updateAudioIndicator(true);
+      this.synth.speak(utterance);
+    } catch (err) {
+      console.warn("Error al emitir voz:", err);
+      executeCallback();
+    }
   }
 
   pause() {
@@ -95,11 +138,17 @@ class SpeechSynthesisManager {
       this.isPausedState = true;
       this.updateAudioIndicator(false);
       accessibilityManager.announcePolite("Narración pausada");
+      if (this.recognitionController && typeof this.recognitionController.resumeAfterSpeaking === "function") {
+        this.recognitionController.resumeAfterSpeaking();
+      }
     }
   }
 
   resume() {
     if (this.synth && this.isPausedState) {
+      if (this.recognitionController && typeof this.recognitionController.pauseForSpeaking === "function") {
+        this.recognitionController.pauseForSpeaking();
+      }
       this.synth.resume();
       this.isPausedState = false;
       this.updateAudioIndicator(true);
@@ -115,11 +164,27 @@ class SpeechSynthesisManager {
     }
   }
 
+  /**
+   * Cancelación inmediata sin encolamiento ni latencia (WCAG 1.4.2)
+   */
+  cancelImmediate() {
+    if (!this.synth) return;
+    try {
+      this.synth.cancel();
+    } catch (e) {}
+    if (this.activeUtterances) {
+      this.activeUtterances.clear();
+    }
+    this.isPausedState = false;
+    this.updateAudioIndicator(false);
+  }
+
   stop() {
     if (this.synth) {
-      this.synth.cancel();
-      this.isPausedState = false;
-      this.updateAudioIndicator(false);
+      this.cancelImmediate();
+      if (this.recognitionController && typeof this.recognitionController.resumeAfterSpeaking === "function") {
+        this.recognitionController.resumeAfterSpeaking();
+      }
     }
   }
 
@@ -127,7 +192,7 @@ class SpeechSynthesisManager {
     if (this.lastSpokenText) {
       this.speak(this.lastSpokenText, true);
     } else {
-      this.speak("No hay ninguna narración previa para repetir.", true);
+      this.speak("No hay ninguna narración previa.", true);
     }
   }
 
@@ -135,18 +200,18 @@ class SpeechSynthesisManager {
     this.isEnabled = !this.isEnabled;
     if (!this.isEnabled) {
       this.stop();
-      accessibilityManager.announcePolite("Voz de lectura desactivada");
+      accessibilityManager.announcePolite("Voz desactivada");
     } else {
-      accessibilityManager.announcePolite("Voz de lectura activada");
-      this.speak("Voz de lectura activada.", false);
+      accessibilityManager.announcePolite("Voz activada");
+      this.speak("Voz del sistema activada.", true);
     }
 
     const ttsBtn = document.getElementById("btn-toggle-tts");
     if (ttsBtn) {
       ttsBtn.setAttribute("aria-pressed", this.isEnabled ? "true" : "false");
       ttsBtn.innerHTML = this.isEnabled
-        ? `🔊 <span>Voz: Activa</span>`
-        : `🔇 <span>Voz: Mute</span>`;
+        ? `<span aria-hidden="true">🔊</span> <span>Voz: Activa</span>`
+        : `<span aria-hidden="true">🔇</span> <span>Voz: Mute</span>`;
       ttsBtn.classList.toggle("active", this.isEnabled);
     }
 
@@ -161,13 +226,13 @@ class SpeechSynthesisManager {
   }
 
   /**
-   * Generar texto en lenguaje natural comprensivo para un horario consolidado
+   * Generar texto conciso en lenguaje natural (máximo 1 o 2 oraciones)
    * @param {Array} cursosMatriculados
-   * @param {string|null} diaFiltro - Si se pide un día específico (ej. "Lunes")
+   * @param {string|null} diaFiltro
    */
   generarNarracionHorario(cursosMatriculados, diaFiltro = null) {
     if (!cursosMatriculados || cursosMatriculados.length === 0) {
-      return "Actualmente no tienes asignaturas matriculadas. Regresa a la pantalla de selección para agregar cursos a tu horario.";
+      return "No tienes materias inscritas. Regresa a selección para añadir cursos.";
     }
 
     const totalCreditos = cursosMatriculados.reduce((sum, c) => sum + c.creditos, 0);
@@ -179,64 +244,20 @@ class SpeechSynthesisManager {
       cursosMatriculados.forEach(c => {
         c.bloques.forEach(b => {
           if (b.dia.toLowerCase().includes(diaNorm)) {
-            cursosDelDia.push({
-              nombre: c.nombre,
-              inicio: b.inicio,
-              fin: b.fin,
-              aula: c.aula,
-              modalidad: c.modalidad
-            });
+            cursosDelDia.push(`${c.nombre} de ${b.inicio} a ${b.fin} en ${c.aula}`);
           }
         });
       });
 
       if (cursosDelDia.length === 0) {
-        return `Para el día ${diaFiltro} no tienes ninguna clase programada. Estás libre.`;
+        return `El día ${diaFiltro} no tienes clases programadas.`;
       }
 
-      let speech = `El ${diaFiltro} tienes ${cursosDelDia.length} ${cursosDelDia.length === 1 ? "clase" : "clases"}. `;
-      cursosDelDia.forEach((item, idx) => {
-        speech += `${idx + 1}. Curso ${item.nombre}, de ${item.inicio} a ${item.fin} horas, en ${item.aula}, modalidad ${item.modalidad}. `;
-      });
-      return speech;
+      return `El ${diaFiltro} tienes: ${cursosDelDia.join(". Y ") + "."}`;
     }
 
-    // Narración global estructurada por días de la semana
-    let speech = `Tienes ${cursosMatriculados.length} asignaturas matriculadas, sumando un total de ${totalCreditos} de 22 créditos permitidos. No tienes ningún cruce de horario. A continuación tu itinerario de la semana: `;
-
-    const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-    let hayDiasConClase = false;
-
-    diasSemana.forEach(dia => {
-      const clasesHoy = [];
-      cursosMatriculados.forEach(c => {
-        c.bloques.forEach(b => {
-          if (b.dia === dia) {
-            clasesHoy.push({
-              curso: c.nombre,
-              horario: `${b.inicio} a ${b.fin}`,
-              aula: c.aula
-            });
-          }
-        });
-      });
-
-      if (clasesHoy.length > 0) {
-        hayDiasConClase = true;
-        speech += `El día ${dia}: `;
-        clasesHoy.forEach(item => {
-          speech += `${item.curso}, de ${item.horario} horas en ${item.aula}. `;
-        });
-      }
-    });
-
-    if (!hayDiasConClase) {
-      speech += "No hay clases programadas para esta semana.";
-    } else {
-      speech += "Fin de la narración de tu horario. Puedes presionar Alt más R para repetir, o decir 'descargar horario'.";
-    }
-
-    return speech;
+    // Narración global concisa
+    return `Tienes ${cursosMatriculados.length} materias con un total de ${totalCreditos} créditos. Para consultar un día específico, di por ejemplo 'qué me toca el lunes'.`;
   }
 }
 

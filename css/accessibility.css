@@ -48,24 +48,45 @@
   --focus-ring-width: 3px;
   --focus-ring-offset: 3px;
 
-  /* Tamaños mínimos de destino (WCAG 2.5.5 / 2.5.8) */
+  /* Tamaños mínimos de destino (WCAG 2.5.8 / WCAG 2.5.5) */
   --touch-target-min: 48px;
-  --touch-target-large: 56px;
+  --touch-target-large: 52px;
 }
 
-/* Modo Alto Contraste Adicional (Tema Obscuro / Amarillo Neón) */
+/* Regla universal de tamaño mínimo de interacción de 48px para controles */
+button,
+input,
+select,
+textarea,
+.btn-util,
+.btn-filter,
+.btn-primary,
+.btn-secondary,
+.btn-course-action,
+.btn-audio-control,
+.btn-voice-toggle,
+.btn-tts-toggle,
+.btn-test-command,
+.btn-day-narrate,
+.skip-link {
+  min-height: var(--touch-target-min);
+  box-sizing: border-box;
+}
+
+/* Modo Alto Contraste (Fondo Negro #000000, Texto Blanco #FFFFFF, Bordes Amarillos #FFFF00 - Ratio > 7:1) */
+body.alto-contraste,
 body.high-contrast {
-  --utp-red: #FFFF00;           /* Amarillo de máximo contraste en negro */
+  --utp-red: #FFFF00;           /* Amarillo de máximo contraste en negro (> 19:1) */
   --utp-red-light: #1A1A00;
-  --utp-red-dark: #D4D400;
+  --utp-red-dark: #E6E600;
   --utp-red-border: #FFFF00;
 
-  --bg-main: #000000;
-  --bg-card: #121212;
-  --text-primary: #FFFFFF;
-  --text-secondary: #E0E0E0;
-  --border-color: #FFFF00;
-  --border-subtle: #888888;
+  --bg-main: #000000;           /* Fondo negro puro */
+  --bg-card: #0A0A0A;
+  --text-primary: #FFFFFF;      /* Texto blanco puro */
+  --text-secondary: #F0F0F0;
+  --border-color: #FFFF00;      /* Bordes amarillos de alto contraste */
+  --border-subtle: #FFFF00;
 
   --color-success-bg: #002B11;
   --color-success-text: #00FF66;
@@ -84,53 +105,67 @@ body.high-contrast {
   --color-info-border: #66B2FF;
 
   --focus-ring-color: #FFFF00;
-  --focus-ring-width: 4px;
-  --focus-ring-offset: 4px;
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 3px;
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
 }
 
 /* Enlaces de salto directo para lectores de pantalla y teclado */
 .skip-link {
   position: absolute;
-  top: -100px;
+  top: -120px;
   left: 1rem;
   background: var(--utp-red);
   color: #FFFFFF !important;
-  font-weight: 700;
+  font-weight: 800;
   padding: 0.75rem 1.5rem;
   z-index: 99999;
-  border-radius: 4px;
-  border: 2px solid #FFFFFF;
-  text-decoration: none;
+  border-radius: 6px;
+  border: 3px solid #FFFFFF;
+  text-decoration: underline;
   font-size: var(--font-base);
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: top 0.2s ease-in-out;
 }
 
-.skip-link:focus {
+.skip-link:focus,
+.skip-link:focus-visible {
   top: 1rem;
-  outline: var(--focus-ring-width) solid #000000;
+  outline: 3px solid #000000 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px #FFFF00 !important;
 }
 
-/* Foco visual forzado y garantizado para todos los elementos interactivos */
+/* Indicador de foco visible de alto contraste dual (WCAG 2.4.7) */
 :focus-visible,
-button:focus,
-a:focus,
-input:focus,
-select:focus,
-textarea:focus,
-[tabindex="0"]:focus {
-  outline: var(--focus-ring-width) solid var(--focus-ring-color) !important;
-  outline-offset: var(--focus-ring-offset) !important;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9) !important;
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #000000 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px #FFFF00, 0 0 0 9px #000000 !important;
 }
 
+body.alto-contraste :focus-visible,
 body.high-contrast :focus-visible,
-body.high-contrast button:focus,
-body.high-contrast a:focus,
-body.high-contrast input:focus,
-body.high-contrast select:focus {
-  outline: var(--focus-ring-width) solid #FFFF00 !important;
-  outline-offset: var(--focus-ring-offset) !important;
-  box-shadow: 0 0 0 3px #000000 !important;
+body.alto-contraste button:focus-visible,
+body.high-contrast button:focus-visible,
+body.alto-contraste a:focus-visible,
+body.high-contrast a:focus-visible,
+body.alto-contraste input:focus-visible,
+body.high-contrast input:focus-visible,
+body.alto-contraste select:focus-visible,
+body.high-contrast select:focus-visible {
+  outline: 3px solid #FFFFFF !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px #FFFF00, 0 0 0 9px #000000 !important;
 }
 
 /* Regiones en vivo ocultas visualmente pero legibles por lectores de pantalla */
@@ -146,14 +181,58 @@ body.high-contrast select:focus {
   border: 0 !important;
 }
 
-/* Animaciones accesibles (respetando prefers-reduced-motion) */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+/* Estilos de alta visibilidad para botones de prueba de audio / comandos */
+.btn-test-audio,
+.btn-test-command {
+  position: relative;
+  border: 2px solid var(--border-color);
+  font-weight: 700;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-test-audio:focus-visible,
+.btn-test-command:focus-visible {
+  outline: 4px solid #000000 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 7px #FFFF00, 0 0 0 10px #000000 !important;
+}
+
+body.alto-contraste .btn-test-audio:focus-visible,
+body.high-contrast .btn-test-audio:focus-visible,
+body.alto-contraste .btn-test-command:focus-visible,
+body.high-contrast .btn-test-command:focus-visible {
+  outline: 4px solid #FFFFFF !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 7px #FFFF00, 0 0 0 11px #000000 !important;
+}
+
+.btn-test-audio.testing-active,
+.btn-test-command.testing-active {
+  animation: testAudioPulse 0.8s ease-in-out infinite;
+  background-color: var(--utp-red) !important;
+  color: #FFFFFF !important;
+}
+
+body.alto-contraste .btn-test-audio.testing-active,
+body.high-contrast .btn-test-audio.testing-active,
+body.alto-contraste .btn-test-command.testing-active,
+body.high-contrast .btn-test-command.testing-active {
+  background-color: #FFFF00 !important;
+  color: #000000 !important;
+}
+
+@keyframes testAudioPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(230, 0, 35, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 8px rgba(230, 0, 35, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(230, 0, 35, 0);
   }
 }
+
