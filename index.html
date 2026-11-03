@@ -74,6 +74,17 @@
           <span aria-hidden="true">🔊</span> <span>Probar</span>
         </button>
 
+        <!-- Botón Centro de Ayuda Accesible (Comandos de Voz y Teclado) -->
+        <button
+          type="button"
+          id="btn-open-help"
+          class="btn-util btn-help"
+          aria-label="Abrir centro de ayuda interactivo. Atajo: Alt + A o diga 'ayuda'"
+          title="Centro de ayuda con comandos de voz y atajos de teclado (Alt + A o diga 'ayuda')"
+        >
+          <span aria-hidden="true">❓</span> <span>Ayuda</span>
+        </button>
+
         <!-- Botón Cerrar Sesión (Visible cuando el usuario ha ingresado) -->
         <button
           type="button"
@@ -156,6 +167,480 @@
       </div>
     </div>
   </footer>
+
+  <!-- ==========================================================================
+       MODAL INTERACTIVO ACCESIBLE: CENTRO DE AYUDA (VOZ Y TECLADO - WCAG 2.2 AA)
+       ========================================================================== -->
+  <div
+    id="help-modal"
+    class="help-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="help-modal-title"
+    aria-describedby="help-modal-desc"
+    style="display: none;"
+  >
+    <div class="help-modal-dialog">
+      <!-- Encabezado del Modal -->
+      <div class="help-modal-header">
+        <div class="help-header-titles">
+          <div class="help-badge-wrapper">
+            <span class="help-badge"><span aria-hidden="true">❓</span> Centro de Ayuda Interactivo</span>
+            <span class="help-voice-active-indicator" aria-live="polite">🎙️ Asistente Escuchando</span>
+          </div>
+          <h2 id="help-modal-title" class="help-modal-title">Comandos de Voz y Atajos de Teclado UTP</h2>
+          <p id="help-modal-desc" class="help-modal-subtitle">
+            Consulte todos los comandos disponibles, alterne entre pestañas o formule una pregunta por voz.
+          </p>
+        </div>
+        <button
+          type="button"
+          id="btn-close-help-modal"
+          class="btn-close-modal"
+          aria-label="Cerrar centro de ayuda (Escape o diga 'cerrar ayuda')"
+          title="Cerrar ayuda (Esc)"
+        >
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+
+      <!-- Barra de Pregunta Auditiva / Asistente Interactivo -->
+      <div class="help-audio-guide-banner" role="region" aria-label="Guía Interactiva por Voz">
+        <div class="help-audio-text">
+          <span class="help-mic-icon" aria-hidden="true">🗣️</span>
+          <div>
+            <strong>¿Cómo desea interactuar?</strong> Puede decir <em>"comandos de voz"</em>, <em>"atajos de teclado"</em>, o formular una pregunta directa como <em>"¿cómo dicto mi código?"</em> o <em>"¿cómo cierro sesión?"</em>.
+          </div>
+        </div>
+        <button
+          type="button"
+          id="btn-narrar-guia-ayuda"
+          class="btn-util btn-contrast-toggle"
+          aria-label="Escuchar guía de ayuda interactiva a manera de pregunta"
+        >
+          <span aria-hidden="true">🔊</span> <span>Escuchar Guía</span>
+        </button>
+      </div>
+
+      <!-- Pestañas de Navegación Accesibles -->
+      <div class="help-tabs-nav" role="tablist" aria-label="Secciones del Centro de Ayuda">
+        <button
+          type="button"
+          role="tab"
+          id="tab-btn-voice"
+          class="help-tab-btn active"
+          aria-selected="true"
+          aria-controls="help-tab-voice"
+          tabindex="0"
+        >
+          <span aria-hidden="true">🎙️</span> <span>Comandos de Voz</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="tab-btn-keys"
+          class="help-tab-btn"
+          aria-selected="false"
+          aria-controls="help-tab-keys"
+          tabindex="-1"
+        >
+          <span aria-hidden="true">⌨️</span> <span>Atajos de Teclado</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="tab-btn-questions"
+          class="help-tab-btn"
+          aria-selected="false"
+          aria-controls="help-tab-questions"
+          tabindex="-1"
+        >
+          <span aria-hidden="true">💬</span> <span>Pregúntale al Asistente</span>
+        </button>
+      </div>
+
+      <!-- Cuerpo del Modal -->
+      <div class="help-modal-body">
+        <!-- ==========================================
+             PESTAÑA 1: COMANDOS DE VOZ
+             ========================================== -->
+        <div id="help-tab-voice" class="help-tab-panel active" role="tabpanel" aria-labelledby="tab-btn-voice">
+          <!-- Categoría: Comandos Globales -->
+          <div class="help-category-section">
+            <h3 class="help-category-heading">
+              <span aria-hidden="true">🌐</span> Comandos Globales (Disponibles en todo momento)
+            </h3>
+            <div class="help-cards-grid">
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"ayuda"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando ayuda: abre este centro interactivo de comandos y atajos" aria-label="Escuchar explicación de comando ayuda">🔊</button>
+                </div>
+                <p class="help-card-desc">Despliega este centro de ayuda interactivo.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"cerrar ayuda"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando cerrar ayuda: cierra esta ventana modal y regresa a la pantalla previa" aria-label="Escuchar explicación de comando cerrar ayuda">🔊</button>
+                </div>
+                <p class="help-card-desc">Cierra esta ventana modal y regresa a su pantalla.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"alto contraste"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando alto contraste: alterna el modo de alto contraste con fondo negro y tipografía amarilla" aria-label="Escuchar explicación de comando alto contraste">🔊</button>
+                </div>
+                <p class="help-card-desc">Alterna fondo negro y texto amarillo de alto contraste.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"aumentar texto" / "disminuir texto"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando aumentar texto: ajusta la escala tipográfica al 125% o 150%" aria-label="Escuchar explicación de comando aumentar texto">🔊</button>
+                </div>
+                <p class="help-card-desc">Regula el tamaño tipográfico (100%, 125% o 150%).</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"cerrar sesión"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando cerrar sesión: cierra su cuenta institucional y vuelve a la pantalla inicial" aria-label="Escuchar explicación de comando cerrar sesión">🔊</button>
+                </div>
+                <p class="help-card-desc">Cierra su sesión y regresa a la pantalla de acceso.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"qué hace este botón"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando qué hace este botón: explica detalladamente la función del control enfocado" aria-label="Escuchar explicación de comando explicar botón">🔊</button>
+                </div>
+                <p class="help-card-desc">Explica en voz alta la acción del elemento que tenga el foco.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categoría: Pantalla de Login -->
+          <div class="help-category-section">
+            <h3 class="help-category-heading">
+              <span aria-hidden="true">🔑</span> Comandos en Pantalla de Login
+            </h3>
+            <div class="help-cards-grid">
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"dictar código"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando dictar código: activa el dictado por voz para ingresar su código de estudiante" aria-label="Escuchar explicación de comando dictar código">🔊</button>
+                </div>
+                <p class="help-card-desc">Activa el reconocimiento para dictar su código universitario.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"borrar código"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando borrar código: limpia el código ingresado para volver a dictar" aria-label="Escuchar explicación de comando borrar código">🔊</button>
+                </div>
+                <p class="help-card-desc">Limpia la casilla de código si cometió un error.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"solicitar pin"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando solicitar PIN: envía un código PIN de acceso rápido por SMS a su celular registrado" aria-label="Escuchar explicación de comando solicitar PIN">🔊</button>
+                </div>
+                <p class="help-card-desc">Envía un PIN accesible de 4 dígitos (8492) y lo autocompleta.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"ingresar"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando ingresar: valida sus credenciales institucionales y accede a la matrícula" aria-label="Escuchar explicación de comando ingresar">🔊</button>
+                </div>
+                <p class="help-card-desc">Valida credenciales y accede al catálogo de matrícula.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categoría: Pantalla de Matrícula -->
+          <div class="help-category-section">
+            <h3 class="help-category-heading">
+              <span aria-hidden="true">📚</span> Comandos en Pantalla de Matrícula
+            </h3>
+            <div class="help-cards-grid">
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"seleccionar 1" / "quitar 1"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando seleccionar número: agrega o retira el curso indicado según el catálogo" aria-label="Escuchar comando seleccionar curso">🔊</button>
+                </div>
+                <p class="help-card-desc">Agrega o retira la asignatura según su número en lista.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"filtrar turno [mañana/tarde/noche]"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando filtrar turno: muestra únicamente las asignaturas del turno indicado" aria-label="Escuchar comando filtrar turno">🔊</button>
+                </div>
+                <p class="help-card-desc">Filtra las materias por turno (mañana, tarde, noche o todos).</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"ver créditos"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando ver créditos: narra cuántos créditos lleva acumulados y el límite máximo permitido" aria-label="Escuchar comando ver créditos">🔊</button>
+                </div>
+                <p class="help-card-desc">Narra los créditos acumulados y el límite máximo.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"ver horario" / "confirmar matrícula"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando confirmar matrícula: finaliza y registra sus asignaturas seleccionadas" aria-label="Escuchar comando confirmar matrícula">🔊</button>
+                </div>
+                <p class="help-card-desc">Revisa el horario semanal o confirma su matrícula final.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categoría: Pantalla de Horario -->
+          <div class="help-category-section">
+            <h3 class="help-category-heading">
+              <span aria-hidden="true">🗓️</span> Comandos en Pantalla de Horario
+            </h3>
+            <div class="help-cards-grid">
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"narrar todo"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando narrar todo: lee secuencialmente todo el cronograma semanal día por día" aria-label="Escuchar comando narrar todo">🔊</button>
+                </div>
+                <p class="help-card-desc">Narra la programación completa de la semana de clases.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"qué me toca el lunes" / "hoy"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando qué me toca el día: lee únicamente las clases del día solicitado" aria-label="Escuchar comando consultar día">🔊</button>
+                </div>
+                <p class="help-card-desc">Narra las clases asignadas al día específico consultado.</p>
+              </div>
+
+              <div class="help-card">
+                <div class="help-card-top">
+                  <span class="command-trigger-badge">"descargar horario" / "volver"</span>
+                  <button type="button" class="btn-mini-audio" data-speak-command="Comando descargar horario: exporta el cronograma en formato accesible" aria-label="Escuchar comando descargar horario">🔊</button>
+                </div>
+                <p class="help-card-desc">Exporta el cronograma o regresa a modificar cursos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             PESTAÑA 2: COMANDOS DE TECLAS (ATAJOS)
+             ========================================== -->
+        <div id="help-tab-keys" class="help-tab-panel" role="tabpanel" aria-labelledby="tab-btn-keys" style="display: none;">
+          <div class="help-category-section">
+            <h3 class="help-category-heading">
+              <span aria-hidden="true">⌨️</span> Atajos de Teclado del Sistema Accesible UTP
+            </h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: var(--font-sm);">
+              Todos los atajos funcionan con navegación universal y cumplen el estándar WCAG 2.2 AA / AAA.
+            </p>
+
+            <div class="help-keys-table-wrapper">
+              <table class="help-keys-table">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width: 25%;">Combinación de Teclas</th>
+                    <th scope="col" style="width: 45%;">Acción y Función</th>
+                    <th scope="col" style="width: 30%;">Beneficio de Accesibilidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><kbd class="key-combo">Alt</kbd> + <kbd class="key-combo">A</kbd></td>
+                    <td><strong>Abrir / Cerrar Centro de Ayuda</strong></td>
+                    <td>Acceso instantáneo a esta interfaz de comandos guiados.</td>
+                  </tr>
+                  <tr>
+                    <td><kbd class="key-combo">Alt</kbd> + <kbd class="key-combo">M</kbd></td>
+                    <td><strong>Alternar Asistente de Voz (Micrófono)</strong></td>
+                    <td>Activa o silencia el micrófono sin tocar el ratón.</td>
+                  </tr>
+                  <tr>
+                    <td><kbd class="key-combo">Alt</kbd> + <kbd class="key-combo">C</kbd></td>
+                    <td><strong>Alternar Modo Alto Contraste</strong></td>
+                    <td>Pasa a fondo negro con contraste amarillo (WCAG AAA).</td>
+                  </tr>
+                  <tr>
+                    <td><kbd class="key-combo">Alt</kbd> + <kbd class="key-combo">1</kbd></td>
+                    <td><strong>Texto Normal (100%)</strong></td>
+                    <td>Restaura la escala predeterminada de tipografía.</td>
+                  </tr>
+                  <tr>
+                    <td><kbd class="key-combo">Alt</kbd> + <kbd class="key-combo">2</kbd></td>
+                    <td><strong>Texto Grande (125%)</strong></td>
+                    <td>Aumenta el tamaño visual para baja visión.</td>
+                  </tr>
+                  <tr>
+                    <td><kbd class="key-combo">Alt</kbd> + <kbd class="key-combo">3</kbd></td>
+                    <td><strong>Texto Máximo (150%)</strong></td>
+                    <td>Escala máxima recomendada sin desbordamientos.</td>
+                  </tr>
+                  <tr>
+                    <td><kbd class="key-combo">Espacio</kbd></td>
+                    <td><strong>Push-to-Talk / Alternar Voz</strong></td>
+                    <td>Permite pausar y reactivar la escucha por voz rápidamente.</td>
+                  </tr>
+                  <tr>
+                    <td><kbd class="key-combo">Esc</kbd></td>
+                    <td><strong>Cancelar Audio / Cerrar Modal</strong></td>
+                    <td>Detiene narraciones en curso y cierra esta ventana de ayuda.</td>
+                  </tr>
+                  <tr>
+                    <td><kbd class="key-combo">Enter</kbd></td>
+                    <td><strong>Confirmar Acción o Enviar</strong></td>
+                    <td>Inicia sesión o valida la confirmación de matrícula.</td>
+                  </tr>
+                  <tr>
+                    <td><kbd class="key-combo">Tab</kbd> / <kbd class="key-combo">Shift</kbd> + <kbd class="key-combo">Tab</kbd></td>
+                    <td><strong>Navegación Secuencial de Foco</strong></td>
+                    <td>Recorre todos los controles interactivos con indicador visible.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             PESTAÑA 3: PREGÚNTALE AL ASISTENTE (GUIADO)
+             ========================================== -->
+        <div id="help-tab-questions" class="help-tab-panel" role="tabpanel" aria-labelledby="tab-btn-questions" style="display: none;">
+          <div class="help-category-section">
+            <h3 class="help-category-heading">
+              <span aria-hidden="true">💬</span> Preguntas Guiadas por Voz
+            </h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.25rem; font-size: var(--font-sm);">
+              Dicte cualquiera de estas preguntas al micrófono o haga clic en el botón <strong>"Escuchar Respuesta"</strong>:
+            </p>
+
+            <div class="help-questions-list">
+              <div class="help-question-card" data-question-card="codigo">
+                <div class="help-q-header">
+                  <span class="help-q-title">"¿Cómo dicto mi código de estudiante?"</span>
+                  <button type="button" class="btn-util active" data-help-question="codigo" aria-label="Escuchar respuesta para: cómo dicto mi código">
+                    <span aria-hidden="true">🔊</span> <span>Escuchar Respuesta</span>
+                  </button>
+                </div>
+                <p class="help-q-answer">
+                  Diga <strong>"dictar código"</strong> y pronuncie sus dígitos pausadamente, o active el botón de micrófono en la casilla de código.
+                </p>
+              </div>
+
+              <div class="help-question-card" data-question-card="pin">
+                <div class="help-q-header">
+                  <span class="help-q-title">"¿Cómo solicito un código PIN de acceso rápido?"</span>
+                  <button type="button" class="btn-util active" data-help-question="pin" aria-label="Escuchar respuesta para: cómo solicito un PIN">
+                    <span aria-hidden="true">🔊</span> <span>Escuchar Respuesta</span>
+                  </button>
+                </div>
+                <p class="help-q-answer">
+                  Diga <strong>"solicitar pin"</strong> o pulse el botón en pantalla. Recibirá un PIN de 4 dígitos (8492) por SMS que se autocompletará.
+                </p>
+              </div>
+
+              <div class="help-question-card" data-question-card="matricula">
+                <div class="help-q-header">
+                  <span class="help-q-title">"¿Cómo selecciono o quito un curso?"</span>
+                  <button type="button" class="btn-util active" data-help-question="matricula" aria-label="Escuchar respuesta para: cómo selecciono o quito un curso">
+                    <span aria-hidden="true">🔊</span> <span>Escuchar Respuesta</span>
+                  </button>
+                </div>
+                <p class="help-q-answer">
+                  Diga <strong>"seleccionar"</strong> seguido del número de asignatura (ej. <em>"seleccionar 1"</em>). Para retirarla diga <em>"quitar 1"</em>.
+                </p>
+              </div>
+
+              <div class="help-question-card" data-question-card="confirmar">
+                <div class="help-q-header">
+                  <span class="help-q-title">"¿Cómo confirmo mi matrícula?"</span>
+                  <button type="button" class="btn-util active" data-help-question="confirmar" aria-label="Escuchar respuesta para: cómo confirmo mi matrícula">
+                    <span aria-hidden="true">🔊</span> <span>Escuchar Respuesta</span>
+                  </button>
+                </div>
+                <p class="help-q-answer">
+                  Diga <strong>"confirmar matrícula"</strong> o presione <kbd>Enter</kbd> para finalizar y guardar su horario oficial.
+                </p>
+              </div>
+
+              <div class="help-question-card" data-question-card="horario">
+                <div class="help-q-header">
+                  <span class="help-q-title">"¿Cómo reviso mi horario semanal?"</span>
+                  <button type="button" class="btn-util active" data-help-question="horario" aria-label="Escuchar respuesta para: cómo reviso mi horario">
+                    <span aria-hidden="true">🔊</span> <span>Escuchar Respuesta</span>
+                  </button>
+                </div>
+                <p class="help-q-answer">
+                  Diga <strong>"ver horario"</strong> para acceder a la grilla semanal, o diga <strong>"narrar todo"</strong> para escuchar todas sus clases.
+                </p>
+              </div>
+
+              <div class="help-question-card" data-question-card="contraste">
+                <div class="help-q-header">
+                  <span class="help-q-title">"¿Cómo activo el modo de alto contraste?"</span>
+                  <button type="button" class="btn-util active" data-help-question="contraste" aria-label="Escuchar respuesta para: cómo activo el alto contraste">
+                    <span aria-hidden="true">🔊</span> <span>Escuchar Respuesta</span>
+                  </button>
+                </div>
+                <p class="help-q-answer">
+                  Diga <strong>"alto contraste"</strong> en cualquier momento o presione las teclas <kbd>Alt</kbd> + <kbd>C</kbd>.
+                </p>
+              </div>
+
+              <div class="help-question-card" data-question-card="texto">
+                <div class="help-q-header">
+                  <span class="help-q-title">"¿Cómo cambio el tamaño de las letras?"</span>
+                  <button type="button" class="btn-util active" data-help-question="texto" aria-label="Escuchar respuesta para: cómo cambio el tamaño de las letras">
+                    <span aria-hidden="true">🔊</span> <span>Escuchar Respuesta</span>
+                  </button>
+                </div>
+                <p class="help-q-answer">
+                  Diga <strong>"aumentar texto"</strong> o use las teclas <kbd>Alt</kbd> + <kbd>1</kbd> (Normal), <kbd>Alt</kbd> + <kbd>2</kbd> (Grande) o <kbd>Alt</kbd> + <kbd>3</kbd> (Máximo).
+                </p>
+              </div>
+
+              <div class="help-question-card" data-question-card="cerrar_sesion">
+                <div class="help-q-header">
+                  <span class="help-q-title">"¿Cómo cierro mi sesión?"</span>
+                  <button type="button" class="btn-util active" data-help-question="cerrar_sesion" aria-label="Escuchar respuesta para: cómo cierro mi sesión">
+                    <span aria-hidden="true">🔊</span> <span>Escuchar Respuesta</span>
+                  </button>
+                </div>
+                <p class="help-q-answer">
+                  Diga <strong>"cerrar sesión"</strong> en cualquier pantalla o use el botón <strong>Cerrar Sesión</strong> en la cabecera superior.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie del Modal con Instrucciones Rápidas -->
+      <div class="help-modal-footer">
+        <div class="help-footer-hint">
+          Atajos: Presione <kbd>Esc</kbd> o diga <strong>"cerrar ayuda"</strong> para salir • Diga <strong>"comandos de voz"</strong> o <strong>"atajos de teclado"</strong> para alternar.
+        </div>
+        <button
+          type="button"
+          id="btn-footer-close-help"
+          class="btn-util active"
+          style="min-height: 44px; padding: 0.5rem 1.25rem;"
+        >
+          <span>Volver al Sistema</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Lógica Modular JavaScript ES6 -->
   <script type="module" src="js/app.js"></script>

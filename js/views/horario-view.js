@@ -393,10 +393,14 @@ export class HorarioView {
       if (grilla) accessibilityManager.setFocus(grilla, true);
       speechSynthesisManager.speak("Grilla semanal enfocada.", true);
     } else if (action === "AYUDA") {
-      speechSynthesisManager.speak(
-        "Diga 'narrar todo', 'qué tengo el lunes', 'descargar horario' o 'volver'.",
-        true
-      );
+      if (window.utpApp && window.utpApp.helpModalManager) {
+        window.utpApp.helpModalManager.open("voice", true);
+      } else {
+        speechSynthesisManager.speak(
+          "Diga 'narrar todo', 'qué tengo el lunes', 'descargar horario' o 'volver'.",
+          true
+        );
+      }
     }
   }
 }

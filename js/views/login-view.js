@@ -483,10 +483,14 @@ export class LoginView {
       if (btnPin) accessibilityManager.setFocus(btnPin, true);
       this.handleSolicitarPin();
     } else if (action === "AYUDA") {
-      speechSynthesisManager.speak(
-        "Dicte su código pausadamente, o diga 'ingresar' para acceder al sistema.",
-        true
-      );
+      if (window.utpApp && window.utpApp.helpModalManager) {
+        window.utpApp.helpModalManager.open("voice", true);
+      } else {
+        speechSynthesisManager.speak(
+          "Dicte su código pausadamente, o diga 'ingresar' para acceder al sistema.",
+          true
+        );
+      }
     }
   }
 

@@ -270,7 +270,163 @@ class SpeechRecognitionManager {
       return;
     }
 
-    if (cleanText.includes("ayuda") || cleanText.includes("comandos")) {
+    // Comandos Interactivos del Centro de Ayuda y Modal de Comandos
+    if (
+      cleanText.includes("cerrar ayuda") ||
+      cleanText.includes("cerrar la ayuda") ||
+      cleanText.includes("salir de ayuda") ||
+      cleanText.includes("cerrar ventana de ayuda") ||
+      cleanText.includes("ocultar ayuda") ||
+      cleanText === "cerrar ayuda"
+    ) {
+      this.dispatchCommand("CERRAR_AYUDA");
+      return;
+    }
+
+    if (
+      cleanText.includes("comandos de voz") ||
+      cleanText.includes("comandos por voz") ||
+      cleanText.includes("ver comandos de voz") ||
+      cleanText.includes("pestaña voz") ||
+      cleanText.includes("pestaña de voz") ||
+      cleanText.includes("sección voz") ||
+      cleanText.includes("seccion voz") ||
+      cleanText === "comandos de voz" ||
+      cleanText === "voz"
+    ) {
+      this.dispatchCommand("VER_COMANDOS_VOZ");
+      return;
+    }
+
+    if (
+      cleanText.includes("comandos de teclas") ||
+      cleanText.includes("comandos de teclado") ||
+      cleanText.includes("atajos de teclado") ||
+      cleanText.includes("atajos de teclas") ||
+      cleanText.includes("ver teclas") ||
+      cleanText.includes("ver atajos") ||
+      cleanText.includes("pestaña teclas") ||
+      cleanText.includes("pestaña de teclas") ||
+      cleanText.includes("pestaña atajos") ||
+      cleanText.includes("sección teclas") ||
+      cleanText.includes("seccion teclas") ||
+      cleanText === "atajos de teclado" ||
+      cleanText === "atajos" ||
+      cleanText === "teclado"
+    ) {
+      this.dispatchCommand("VER_COMANDOS_TECLAS");
+      return;
+    }
+
+    // Consultas a manera de pregunta formuladas por voz
+    if (
+      cleanText.includes("cómo dicto mi código") ||
+      cleanText.includes("como dicto mi codigo") ||
+      cleanText.includes("cómo dictar código") ||
+      cleanText.includes("como dictar codigo") ||
+      cleanText.includes("cómo ingreso mi código") ||
+      cleanText.includes("como ingreso mi codigo") ||
+      cleanText.includes("dictar mi código") ||
+      cleanText.includes("dictar mi codigo")
+    ) {
+      this.dispatchCommand("PREGUNTA_AYUDA", "codigo");
+      return;
+    }
+
+    if (
+      cleanText.includes("cómo me matriculo") ||
+      cleanText.includes("como me matriculo") ||
+      cleanText.includes("cómo selecciono un curso") ||
+      cleanText.includes("como selecciono un curso") ||
+      cleanText.includes("cómo seleccionar cursos") ||
+      cleanText.includes("como seleccionar cursos") ||
+      cleanText.includes("cómo elijo asignaturas") ||
+      cleanText.includes("como elijo asignaturas") ||
+      cleanText.includes("cómo agregar cursos") ||
+      cleanText.includes("como agregar cursos")
+    ) {
+      this.dispatchCommand("PREGUNTA_AYUDA", "matricula");
+      return;
+    }
+
+    if (
+      cleanText.includes("cómo confirmo mi matrícula") ||
+      cleanText.includes("como confirmo mi matricula") ||
+      cleanText.includes("cómo finalizar matrícula") ||
+      cleanText.includes("como finalizar matricula") ||
+      cleanText.includes("cómo guardar matrícula") ||
+      cleanText.includes("como guardar matricula")
+    ) {
+      this.dispatchCommand("PREGUNTA_AYUDA", "confirmar");
+      return;
+    }
+
+    if (
+      cleanText.includes("cómo solicito pin") ||
+      cleanText.includes("como solicito pin") ||
+      cleanText.includes("cómo usar el pin") ||
+      cleanText.includes("como usar el pin") ||
+      cleanText.includes("cómo funciona el pin") ||
+      cleanText.includes("como funciona el pin") ||
+      cleanText.includes("solicitar un pin")
+    ) {
+      this.dispatchCommand("PREGUNTA_AYUDA", "pin");
+      return;
+    }
+
+    if (
+      cleanText.includes("cómo veo el horario") ||
+      cleanText.includes("como veo el horario") ||
+      cleanText.includes("cómo ver mi horario") ||
+      cleanText.includes("como ver mi horario") ||
+      cleanText.includes("cómo revisar mi horario") ||
+      cleanText.includes("como revisar mi horario")
+    ) {
+      this.dispatchCommand("PREGUNTA_AYUDA", "horario");
+      return;
+    }
+
+    if (
+      cleanText.includes("cómo activo alto contraste") ||
+      cleanText.includes("como activo alto contraste") ||
+      cleanText.includes("cómo cambio el contraste") ||
+      cleanText.includes("como cambio el contraste") ||
+      cleanText.includes("cómo funciona el contraste") ||
+      cleanText.includes("como funciona el contraste")
+    ) {
+      this.dispatchCommand("PREGUNTA_AYUDA", "contraste");
+      return;
+    }
+
+    if (
+      cleanText.includes("cómo aumento el texto") ||
+      cleanText.includes("como aumento el texto") ||
+      cleanText.includes("cómo aumento la letra") ||
+      cleanText.includes("como aumento la letra") ||
+      cleanText.includes("cómo cambio el tamaño") ||
+      cleanText.includes("como cambio el tamano")
+    ) {
+      this.dispatchCommand("PREGUNTA_AYUDA", "texto");
+      return;
+    }
+
+    if (
+      cleanText.includes("cómo cierro sesión") ||
+      cleanText.includes("como cierro sesion") ||
+      cleanText.includes("cómo salir del sistema") ||
+      cleanText.includes("como salir del sistema")
+    ) {
+      this.dispatchCommand("PREGUNTA_AYUDA", "cerrar_sesion");
+      return;
+    }
+
+    if (
+      cleanText.includes("ayuda") ||
+      cleanText.includes("comandos") ||
+      cleanText.includes("abrir ayuda") ||
+      cleanText.includes("mostrar ayuda") ||
+      cleanText.includes("ver ayuda")
+    ) {
       this.dispatchCommand("AYUDA");
       return;
     }

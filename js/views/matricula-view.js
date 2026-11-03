@@ -614,7 +614,11 @@ export class MatriculaView {
     } else if (action === "CONFIRMAR_MATRICULA") {
       this.confirmarMatricula();
     } else if (action === "AYUDA") {
-      this.narrarOpciones();
+      if (window.utpApp && window.utpApp.helpModalManager) {
+        window.utpApp.helpModalManager.open("voice", true);
+      } else {
+        this.narrarOpciones();
+      }
     }
   }
 }

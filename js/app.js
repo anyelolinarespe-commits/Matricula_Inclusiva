@@ -6,6 +6,7 @@
 import { accessibilityManager } from "./services/accessibility.js";
 import { speechSynthesisManager } from "./services/speech-synthesis.js";
 import { speechRecognitionManager } from "./services/speech-recognition.js";
+import { helpModalManager } from "./services/help-modal.js";
 import { CURSOS_CATALOGO } from "./data/mock-data.js";
 import { LoginView } from "./views/login-view.js";
 import { MatriculaView } from "./views/matricula-view.js";
@@ -21,11 +22,13 @@ class App {
       cursosMatriculados: [CURSOS_CATALOGO[0], CURSOS_CATALOGO[1]]
     };
     this.activeViewInstance = null;
+    this.helpModalManager = helpModalManager;
 
     this.init();
   }
 
   init() {
+    this.helpModalManager.init();
     this.setupGlobalAccessibilityControls();
     this.setupGlobalKeyboardShortcuts();
     this.setupSpeechRecognitionPipeline();
@@ -70,6 +73,14 @@ class App {
       });
     }
 
+    // Botón Centro de Ayuda global
+    const btnOpenHelp = document.getElementById("btn-open-help");
+    if (btnOpenHelp) {
+      btnOpenHelp.addEventListener("click", () => {
+        this.helpModalManager.open("voice", true);
+      });
+    }
+
     // Botón Cerrar Sesión global
     const btnGlobalLogout = document.getElementById("btn-global-logout");
     if (btnGlobalLogout) {
@@ -86,6 +97,10 @@ class App {
         e.preventDefault();
         window.speechSynthesis.cancel();
         speechSynthesisManager.stop();
+        if (this.helpModalManager && this.helpModalManager.isOpen()) {
+          this.helpModalManager.close();
+          return;
+        }
         accessibilityManager.announcePolite("Narración detenida");
         return;
       }
@@ -126,7 +141,7 @@ class App {
           accessibilityManager.toggleHighContrast();
         } else if (e.key === "a" || e.key === "A") {
           e.preventDefault();
-          this.narrarAyudaGlobal();
+          this.helpModalManager.toggle();
         } else if (e.key === "Enter") {
           e.preventDefault();
           if (this.state.currentView === "matricula") {
@@ -149,6 +164,28 @@ class App {
   setupSpeechRecognitionPipeline() {
     speechRecognitionManager.onCommand(({ action, payload, view }) => {
       console.log(`[Comando Ejecutado]: ${action} (${payload}) en vista ${view}`);
+
+      // Comandos de gestión del Centro de Ayuda
+      if (action === "AYUDA") {
+        this.helpModalManager.open("voice", true);
+        return;
+      }
+      if (action === "CERRAR_AYUDA") {
+        this.helpModalManager.close();
+        return;
+      }
+      if (action === "VER_COMANDOS_VOZ") {
+        this.helpModalManager.switchTab("voice", true);
+        return;
+      }
+      if (action === "VER_COMANDOS_TECLAS") {
+        this.helpModalManager.switchTab("keys", true);
+        return;
+      }
+      if (action === "PREGUNTA_AYUDA") {
+        this.helpModalManager.responderPregunta(payload, true);
+        return;
+      }
 
       if (action === "CERRAR_SESION") {
         this.logout();

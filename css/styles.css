@@ -1192,3 +1192,463 @@ body.alto-contraste .site-footer , body.high-contrast .site-footer {
   flex-wrap: wrap;
   gap: 1rem;
 }
+
+/* ==========================================================================
+   CENTRO DE AYUDA INTERACTIVO Y MODAL DE COMANDOS / ATAJOS (WCAG 2.2 AA)
+   ========================================================================== */
+body.modal-open {
+  overflow: hidden;
+}
+
+.help-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(5px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  animation: fadeInModal 0.2s ease-out;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.help-modal-dialog {
+  background-color: var(--bg-card, #FFFFFF);
+  color: var(--text-primary);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 950px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+  border: 2px solid var(--border-color);
+  overflow: hidden;
+}
+
+.help-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(to bottom, var(--bg-hover), var(--bg-card));
+  border-bottom: 2px solid var(--border-subtle);
+  gap: 1rem;
+}
+
+.help-header-titles {
+  flex: 1;
+}
+
+.help-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.help-badge {
+  background-color: var(--utp-red);
+  color: #FFFFFF;
+  font-size: var(--font-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.help-voice-active-indicator {
+  font-size: var(--font-xs);
+  color: var(--color-success-text);
+  background-color: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.help-modal-title {
+  font-size: var(--font-xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.help-modal-subtitle {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+
+.btn-close-modal {
+  background: transparent;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.btn-close-modal:hover,
+.btn-close-modal:focus-visible {
+  background-color: var(--bg-hover);
+  border-color: var(--utp-red);
+  outline: 3px solid var(--utp-red);
+  outline-offset: 2px;
+}
+
+.help-audio-guide-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.5rem;
+  background-color: #EFF6FF;
+  border-bottom: 2px solid #BFDBFE;
+  color: #1E3A8A;
+  font-size: var(--font-sm);
+  flex-wrap: wrap;
+}
+
+.help-audio-text {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.help-mic-icon {
+  font-size: 1.5rem;
+}
+
+.help-tabs-nav {
+  display: flex;
+  background-color: var(--bg-hover);
+  border-bottom: 2px solid var(--border-color);
+  padding: 0.5rem 1.5rem 0;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+
+.help-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-size: var(--font-base);
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+  min-height: 48px;
+}
+
+.help-tab-btn:hover {
+  color: var(--text-primary);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.help-tab-btn.active {
+  color: var(--utp-red);
+  border-bottom-color: var(--utp-red);
+  background-color: var(--bg-card);
+}
+
+.help-tab-btn:focus-visible {
+  outline: 3px solid var(--utp-red);
+  outline-offset: 2px;
+}
+
+.help-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  max-height: calc(90vh - 250px);
+}
+
+.help-category-section {
+  margin-bottom: 2rem;
+}
+
+.help-category-section:last-child {
+  margin-bottom: 0.5rem;
+}
+
+.help-category-heading {
+  font-size: var(--font-lg);
+  font-weight: 800;
+  color: var(--utp-red);
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.help-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.help-card {
+  background-color: var(--bg-hover);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.help-card:hover {
+  border-color: var(--utp-red);
+}
+
+.help-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn-mini-audio {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-mini-audio:hover,
+.btn-mini-audio:focus-visible {
+  background-color: var(--bg-card);
+  border-color: var(--utp-red);
+  outline: 2px solid var(--utp-red);
+}
+
+.help-card-desc {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.help-keys-table-wrapper {
+  overflow-x: auto;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.help-keys-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-sm);
+}
+
+.help-keys-table th {
+  background-color: var(--bg-hover);
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-weight: 800;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.help-keys-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.key-combo {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-family: inherit;
+  font-size: var(--font-sm);
+  font-weight: 700;
+  background-color: #F1F5F9;
+  border: 2px solid #CBD5E1;
+  border-radius: 6px;
+  box-shadow: 0 2px 0 #94A3B8;
+  color: #0F172A;
+}
+
+.help-questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.help-question-card {
+  background-color: var(--bg-hover);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.15rem 1.25rem;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.help-question-card.highlighted-question {
+  border-color: var(--utp-red);
+  background-color: rgba(181, 13, 48, 0.08);
+}
+
+.help-q-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.help-q-title {
+  font-size: var(--font-base);
+  font-weight: 800;
+  color: var(--utp-red);
+}
+
+.help-q-answer {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.help-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background-color: var(--bg-hover);
+  border-top: 2px solid var(--border-color);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.help-footer-hint {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+}
+
+/* Modos de Alto Contraste para el Modal */
+body.alto-contraste .help-modal-backdrop,
+body.high-contrast .help-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.94);
+}
+
+body.alto-contraste .help-modal-dialog,
+body.high-contrast .help-modal-dialog {
+  background-color: #000000;
+  border: 3px solid #FFFF00;
+  color: #FFFFFF;
+  box-shadow: 0 0 25px rgba(255, 255, 0, 0.4);
+}
+
+body.alto-contraste .help-modal-header,
+body.high-contrast .help-modal-header,
+body.alto-contraste .help-modal-footer,
+body.high-contrast .help-modal-footer,
+body.alto-contraste .help-tabs-nav,
+body.high-contrast .help-tabs-nav {
+  background: #000000;
+  border-color: #FFFF00;
+}
+
+body.alto-contraste .help-category-heading,
+body.high-contrast .help-category-heading,
+body.alto-contraste .help-q-title,
+body.high-contrast .help-q-title,
+body.alto-contraste .help-modal-title,
+body.high-contrast .help-modal-title {
+  color: #FFFF00;
+}
+
+body.alto-contraste .help-card,
+body.high-contrast .help-card,
+body.alto-contraste .help-question-card,
+body.high-contrast .help-question-card,
+body.alto-contraste .help-keys-table-wrapper,
+body.high-contrast .help-keys-table-wrapper {
+  background-color: #000000;
+  border-color: #FFFF00;
+  color: #FFFFFF;
+}
+
+body.alto-contraste .help-question-card.highlighted-question,
+body.high-contrast .help-question-card.highlighted-question {
+  background-color: #1a1a00;
+  border-color: #FFFF00;
+}
+
+body.alto-contraste .help-audio-guide-banner,
+body.high-contrast .help-audio-guide-banner {
+  background-color: #000000;
+  border-color: #FFFF00;
+  color: #FFFF00;
+}
+
+body.alto-contraste .help-tab-btn,
+body.high-contrast .help-tab-btn {
+  color: #FFFFFF;
+}
+
+body.alto-contraste .help-tab-btn.active,
+body.high-contrast .help-tab-btn.active {
+  color: #000000;
+  background-color: #FFFF00;
+  border-bottom: 3px solid #FFFFFF;
+}
+
+body.alto-contraste .key-combo,
+body.high-contrast .key-combo {
+  background-color: #000000;
+  color: #FFFF00;
+  border: 2px solid #FFFF00;
+  box-shadow: none;
+}
+
+body.alto-contraste .btn-close-modal,
+body.high-contrast .btn-close-modal {
+  border-color: #FFFF00;
+  color: #FFFF00;
+}
+
+body.alto-contraste .btn-mini-audio,
+body.high-contrast .btn-mini-audio {
+  border-color: #FFFF00;
+  color: #FFFF00;
+  background-color: #000000;
+}
