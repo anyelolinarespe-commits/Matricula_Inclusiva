@@ -10,10 +10,11 @@ import { speechRecognitionManager } from "../services/speech-recognition.js";
 import { ESTUDIANTE, CURSOS_CATALOGO, detectarCruceHorario } from "../data/mock-data.js";
 
 export class MatriculaView {
-  constructor(container, state, onNavigateToHorario) {
+  constructor(container, state, onNavigateToHorario, onLogout) {
     this.container = container;
     this.state = state; // Contiene cursosMatriculados
     this.onNavigateToHorario = onNavigateToHorario;
+    this.onLogout = onLogout;
     this.filtroTurno = "todos"; // "todos" | "mañana" | "tarde" | "noche"
     this.conflictoActual = null;
   }
@@ -56,11 +57,22 @@ export class MatriculaView {
               <span><strong>Sede:</strong> ${ESTUDIANTE.sede}</span>
             </div>
           </div>
-          <div style="text-align: right;">
-            <div style="font-size: var(--font-sm); color: var(--text-secondary); font-weight: 700;">Límite Académico</div>
-            <div style="font-size: var(--font-xl); font-weight: 900; color: var(--utp-red);">
-              ${ESTUDIANTE.creditosMaximos} Créditos Máx.
+          <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+            <div>
+              <div style="font-size: var(--font-sm); color: var(--text-secondary); font-weight: 700;">Límite Académico</div>
+              <div style="font-size: var(--font-xl); font-weight: 900; color: var(--utp-red);">
+                ${ESTUDIANTE.creditosMaximos} Créditos Máx.
+              </div>
             </div>
+            <button
+              type="button"
+              id="btn-matricula-logout"
+              class="btn-util btn-logout"
+              aria-label="Cerrar sesión de ${ESTUDIANTE.nombre}. Comando verbal: cerrar sesión"
+              title="Cerrar sesión actual (Diga 'cerrar sesión')"
+            >
+              <span aria-hidden="true">🚪</span> <span>Cerrar Sesión</span>
+            </button>
           </div>
         </div>
 
@@ -350,6 +362,16 @@ export class MatriculaView {
     if (btnReplayWelcome) {
       btnReplayWelcome.addEventListener("click", () => {
         this.narrarBienvenidaIngreso();
+      });
+    }
+
+    // Botón Cerrar Sesión
+    const btnLogout = document.getElementById("btn-matricula-logout");
+    if (btnLogout) {
+      btnLogout.addEventListener("click", () => {
+        if (typeof this.onLogout === "function") {
+          this.onLogout();
+        }
       });
     }
   }

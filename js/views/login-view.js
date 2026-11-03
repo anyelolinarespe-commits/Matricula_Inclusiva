@@ -193,42 +193,10 @@ export class LoginView {
             <ul class="command-list" role="list">
               <li class="command-item">
                 <div>
-                  <span class="command-trigger-badge">"Anyelo (Sistemas)"</span>
-                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Linares, Anyelo • U22220525</div>
+                  <span class="command-trigger-badge">"dictar código U22220525"</span>
+                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Rellena el código de estudiante</div>
                 </div>
-                <button type="button" class="btn-test-command" data-exec="user1" aria-label="Probar Anyelo Linares Sistemas" data-descripcion="Botón Probar: Carga credenciales de Anyelo Linares">Probar</button>
-              </li>
-
-              <li class="command-item">
-                <div>
-                  <span class="command-trigger-badge">"Jhoselyn (Sistemas)"</span>
-                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Tuñoque, Jhoselyn • U22212626</div>
-                </div>
-                <button type="button" class="btn-test-command" data-exec="user2" aria-label="Probar Jhoselyn Tuñoque Sistemas" data-descripcion="Botón Probar: Carga credenciales de Jhoselyn Tuñoque">Probar</button>
-              </li>
-
-              <li class="command-item">
-                <div>
-                  <span class="command-trigger-badge">"Mateo (Industrial)"</span>
-                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Ramírez, Mateo • U22301452</div>
-                </div>
-                <button type="button" class="btn-test-command" data-exec="user3" aria-label="Probar Mateo Ramírez Industrial" data-descripcion="Botón Probar: Carga credenciales de Mateo Ramírez">Probar</button>
-              </li>
-
-              <li class="command-item">
-                <div>
-                  <span class="command-trigger-badge">"Valeria (Marketing)"</span>
-                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Quispe, Valeria • U22108743</div>
-                </div>
-                <button type="button" class="btn-test-command" data-exec="user4" aria-label="Probar Valeria Quispe Marketing" data-descripcion="Botón Probar: Carga credenciales de Valeria Quispe">Probar</button>
-              </li>
-
-              <li class="command-item">
-                <div>
-                  <span class="command-trigger-badge">"Diego (Derecho)"</span>
-                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Flores, Diego • U22319024</div>
-                </div>
-                <button type="button" class="btn-test-command" data-exec="user5" aria-label="Probar Diego Flores Derecho" data-descripcion="Botón Probar: Carga credenciales de Diego Flores">Probar</button>
+                <button type="button" class="btn-test-command" data-exec="dictar" aria-label="Probar comando dictar código" data-descripcion="Botón Probar: simula el dictado verbal del código de estudiante">Probar</button>
               </li>
 
               <li class="command-item">
@@ -507,18 +475,8 @@ export class LoginView {
   }
 
   executeCommand(action) {
-    if (action === "user1" || action === "u22") {
-      this.cargarUsuario("U22220525", "123456");
-    } else if (action === "user2") {
-      this.cargarUsuario("U22212626", "123456");
-    } else if (action === "user3") {
-      this.cargarUsuario("U22301452", "123456");
-    } else if (action === "user4") {
-      this.cargarUsuario("U22108743", "123456");
-    } else if (action === "user5") {
-      this.cargarUsuario("U22319024", "123456");
-    } else if (action === "dictar") {
-      this.handleVoiceCommand("DICTAR_CODIGO", ESTUDIANTE.codigo);
+    if (action === "dictar") {
+      this.handleVoiceCommand("DICTAR_CODIGO", "U22220525");
     } else if (action === "repetir") {
       this.handleVoiceCommand("REPETIR_CODIGO", null);
     } else if (action === "borrar") {

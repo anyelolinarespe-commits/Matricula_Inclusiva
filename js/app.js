@@ -69,6 +69,14 @@ class App {
         speechSynthesisManager.toggleEnabled();
       });
     }
+
+    // Botón Cerrar Sesión global
+    const btnGlobalLogout = document.getElementById("btn-global-logout");
+    if (btnGlobalLogout) {
+      btnGlobalLogout.addEventListener("click", () => {
+        this.logout();
+      });
+    }
   }
 
   setupGlobalKeyboardShortcuts() {
@@ -142,6 +150,11 @@ class App {
     speechRecognitionManager.onCommand(({ action, payload, view }) => {
       console.log(`[Comando Ejecutado]: ${action} (${payload}) en vista ${view}`);
 
+      if (action === "CERRAR_SESION") {
+        this.logout();
+        return;
+      }
+
       if (this.activeViewInstance && typeof this.activeViewInstance.handleVoiceCommand === "function") {
         this.activeViewInstance.handleVoiceCommand(action, payload);
       }
@@ -153,12 +166,28 @@ class App {
     }, 800);
   }
 
+  logout() {
+    this.state.isLoggedIn = false;
+    speechSynthesisManager.stop();
+    window.speechSynthesis.cancel();
+    accessibilityManager.playEarcon("cancel");
+    accessibilityManager.announceAssertive("Sesión cerrada. Regresando a la pantalla de ingreso.");
+    speechSynthesisManager.speak("Sesión cerrada exitosamente.", true);
+    this.navigateTo("login");
+  }
+
   navigateTo(viewName) {
     this.state.currentView = viewName;
     speechRecognitionManager.setCurrentView(viewName);
 
     // Cancelar narraciones previas al cambiar de pantalla
     speechSynthesisManager.stop();
+
+    // Actualizar visibilidad del botón de Cerrar Sesión en la barra global
+    const btnGlobalLogout = document.getElementById("btn-global-logout");
+    if (btnGlobalLogout) {
+      btnGlobalLogout.style.display = this.state.isLoggedIn ? "inline-flex" : "none";
+    }
 
     if (viewName === "login") {
       this.activeViewInstance = new LoginView(this.container, () => {
@@ -172,7 +201,8 @@ class App {
       this.activeViewInstance = new MatriculaView(
         this.container,
         this.state,
-        () => this.navigateTo("horario")
+        () => this.navigateTo("horario"),
+        () => this.logout()
       );
       this.activeViewInstance.render();
       accessibilityManager.setFocus("matricula-heading");
@@ -182,7 +212,8 @@ class App {
       this.activeViewInstance = new HorarioView(
         this.container,
         this.state,
-        () => this.navigateTo("matricula")
+        () => this.navigateTo("matricula"),
+        () => this.logout()
       );
       this.activeViewInstance.render();
       accessibilityManager.setFocus("horario-heading");

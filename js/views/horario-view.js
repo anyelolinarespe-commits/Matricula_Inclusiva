@@ -10,10 +10,11 @@ import { speechRecognitionManager } from "../services/speech-recognition.js";
 import { ESTUDIANTE } from "../data/mock-data.js";
 
 export class HorarioView {
-  constructor(container, state, onNavigateBack) {
+  constructor(container, state, onNavigateBack, onLogout) {
     this.container = container;
     this.state = state; // Cursos matriculados
     this.onNavigateBack = onNavigateBack;
+    this.onLogout = onLogout;
   }
 
   render() {
@@ -72,6 +73,16 @@ export class HorarioView {
               aria-label="Narrar clases de hoy. Atajo Alt más H"
             >
               <span aria-hidden="true">📅</span> <span>Narrar Solo Hoy [Alt + H]</span>
+            </button>
+
+            <button
+              type="button"
+              id="btn-horario-logout"
+              class="btn-audio-control btn-logout"
+              aria-label="Cerrar sesión institucional. Comando verbal: cerrar sesión"
+              title="Cerrar sesión actual (Diga 'cerrar sesión')"
+            >
+              <span aria-hidden="true">🚪</span> <span>Cerrar Sesión</span>
             </button>
           </div>
         </div>
@@ -290,6 +301,16 @@ export class HorarioView {
       btnVolver.addEventListener("click", () => {
         speechSynthesisManager.stop();
         this.onNavigateBack();
+      });
+    }
+
+    // Botón Cerrar Sesión
+    const btnLogout = document.getElementById("btn-horario-logout");
+    if (btnLogout) {
+      btnLogout.addEventListener("click", () => {
+        if (typeof this.onLogout === "function") {
+          this.onLogout();
+        }
       });
     }
 

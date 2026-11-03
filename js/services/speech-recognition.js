@@ -290,6 +290,23 @@ class SpeechRecognitionManager {
       return;
     }
 
+    // Comando universal de Cerrar Sesión
+    if (
+      cleanText.includes("cerrar sesión") ||
+      cleanText.includes("cerrar sesion") ||
+      cleanText.includes("cerrar la sesión") ||
+      cleanText.includes("cerrar la sesion") ||
+      cleanText.includes("salir de la cuenta") ||
+      cleanText.includes("salir del sistema") ||
+      cleanText === "cerrar sesión" ||
+      cleanText === "cerrar sesion" ||
+      cleanText === "salir" ||
+      cleanText === "logout"
+    ) {
+      this.dispatchCommand("CERRAR_SESION");
+      return;
+    }
+
     // 2. Comandos en Pantalla 1: Login
     if (this.currentView === "login") {
       // Navegación de foco por voz (Accesibilidad motriz)
