@@ -98,7 +98,7 @@ export class LoginView {
                   Código de Estudiante <span aria-hidden="true">*</span>
                 </label>
                 <span id="codigo-hint" class="form-hint">
-                  Ejemplo verbal: Diga <strong>"u 2 2 3 0 1 4 52"</strong> o <strong>"dictar código U22220525"</strong>.
+                  Ejemplo verbal: Diga <strong>"u 2 2 3 0 1 4 52"</strong> o <strong>"dictar código"</strong>.
                 </span>
                 <div class="voice-input-wrapper">
                   <input
@@ -193,10 +193,10 @@ export class LoginView {
             <ul class="command-list" role="list">
               <li class="command-item">
                 <div>
-                  <span class="command-trigger-badge">"dictar código U22220525"</span>
+                  <span class="command-trigger-badge">"dictar código"</span>
                   <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Rellena el código de estudiante</div>
                 </div>
-                <button type="button" class="btn-test-command" data-exec="dictar" aria-label="Probar comando dictar código" data-descripcion="Botón Probar: simula el dictado verbal del código de estudiante">Probar</button>
+                <button type="button" class="btn-test-command" data-exec="dictar" aria-label="Probar comando dictar código" data-descripcion="Botón Probar: activa la escucha para dictar el código de estudiante">Probar</button>
               </li>
 
               <li class="command-item">
@@ -476,7 +476,10 @@ export class LoginView {
 
   executeCommand(action) {
     if (action === "dictar") {
-      this.handleVoiceCommand("DICTAR_CODIGO", "U22220525");
+      const inputCodigo = document.getElementById("input-codigo");
+      if (inputCodigo) accessibilityManager.setFocus(inputCodigo, true);
+      speechRecognitionManager.start();
+      speechSynthesisManager.speak("Por favor, dicte su código de estudiante ahora.", true);
     } else if (action === "repetir") {
       this.handleVoiceCommand("REPETIR_CODIGO", null);
     } else if (action === "borrar") {
