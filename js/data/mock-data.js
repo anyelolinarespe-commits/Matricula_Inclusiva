@@ -3,17 +3,79 @@
  * Universidad Tecnológica del Perú - Periodo Académico 2026-II
  */
 
-export const ESTUDIANTE = {
-  codigo: "U20211234",
-  nombre: "Carlos Alberto Mendoza Peña",
-  carrera: "Ingeniería de Sistemas e Informática",
-  facultad: "Facultad de Ingeniería",
-  sede: "Lima Centro",
-  periodo: "2026 - Ciclo II",
-  creditosMaximos: 22,
-  creditosMinimos: 12,
-  telefonoContacto: "+51 987 654 321"
-};
+export const USUARIOS_REGISTRADOS = [
+  {
+    codigo: "U22220525",
+    nombre: "Linares Carmen, Anyelo Gianbranco",
+    password: "123456",
+    carrera: "Ingeniería de Sistemas e Informática",
+    facultad: "Facultad de Ingeniería",
+    sede: "Lima Centro",
+    periodo: "2026 - Ciclo II",
+    creditosMaximos: 22,
+    creditosMinimos: 12,
+    telefonoContacto: "+51 987 654 321"
+  },
+  {
+    codigo: "U22212626",
+    nombre: "Tuñoque Paredes, Jhoselyn",
+    password: "123456",
+    carrera: "Ingeniería de Sistemas e Informática",
+    facultad: "Facultad de Ingeniería",
+    sede: "Lima Centro",
+    periodo: "2026 - Ciclo II",
+    creditosMaximos: 22,
+    creditosMinimos: 12,
+    telefonoContacto: "+51 912 345 678"
+  },
+  {
+    codigo: "U20211234",
+    nombre: "Carlos Alberto Mendoza Peña",
+    password: "password123",
+    carrera: "Ingeniería de Sistemas e Informática",
+    facultad: "Facultad de Ingeniería",
+    sede: "Lima Centro",
+    periodo: "2026 - Ciclo II",
+    creditosMaximos: 22,
+    creditosMinimos: 12,
+    telefonoContacto: "+51 987 654 321"
+  }
+];
+
+export const ESTUDIANTE = { ...USUARIOS_REGISTRADOS[0] };
+
+/**
+ * Valida las credenciales de ingreso (código y contraseña o PIN)
+ * @param {string} codigo
+ * @param {string} password
+ * @returns {{ valido: boolean, usuario?: object, mensaje?: string }}
+ */
+export function autenticarUsuario(codigo, password) {
+  const codLimpio = String(codigo || "").trim().toUpperCase();
+  const passLimpio = String(password || "").trim();
+
+  const usuario = USUARIOS_REGISTRADOS.find(u => u.codigo.toUpperCase() === codLimpio);
+
+  if (!usuario) {
+    return {
+      valido: false,
+      mensaje: `El código '${codigo}' no se encuentra registrado en el sistema institucional.`
+    };
+  }
+
+  // Acepta la contraseña del usuario, 123456 o PIN accesible 8492
+  if (passLimpio !== usuario.password && passLimpio !== "123456" && passLimpio !== "8492") {
+    return {
+      valido: false,
+      mensaje: "Contraseña incorrecta. Verifique sus datos o solicite un PIN de acceso rápido."
+    };
+  }
+
+  return {
+    valido: true,
+    usuario: usuario
+  };
+}
 
 export const CURSOS_CATALOGO = [
   {

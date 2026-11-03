@@ -326,6 +326,16 @@ class SpeechRecognitionManager {
         return;
       }
 
+      // Reconocimiento por nombre de estudiante registrado
+      if (cleanText.includes("anyelo") || cleanText.includes("linares")) {
+        this.dispatchCommand("DICTAR_CODIGO", "U22220525");
+        return;
+      }
+      if (cleanText.includes("jhoselyn") || cleanText.includes("tuñoque") || cleanText.includes("tunoque")) {
+        this.dispatchCommand("DICTAR_CODIGO", "U22212626");
+        return;
+      }
+
       // 5. Dictado y unión inteligente de código de estudiante
       const codigoDetectado = this.parsearCodigoDictado(text);
       if (codigoDetectado) {

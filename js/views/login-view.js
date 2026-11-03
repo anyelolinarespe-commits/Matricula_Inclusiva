@@ -7,7 +7,7 @@
 import { accessibilityManager } from "../services/accessibility.js";
 import { speechSynthesisManager } from "../services/speech-synthesis.js";
 import { speechRecognitionManager } from "../services/speech-recognition.js";
-import { ESTUDIANTE } from "../data/mock-data.js";
+import { ESTUDIANTE, USUARIOS_REGISTRADOS, autenticarUsuario } from "../data/mock-data.js";
 
 /**
  * Convierte un código universitario en pronunciación clara dígito por dígito para confirmación de voz
@@ -39,8 +39,8 @@ export class LoginView {
   constructor(container, onLoginSuccess) {
     this.container = container;
     this.onLoginSuccess = onLoginSuccess;
-    this.codigoValue = ESTUDIANTE.codigo;
-    this.passwordValue = "••••••••••";
+    this.codigoValue = ESTUDIANTE.codigo || "U22220525";
+    this.passwordValue = "123456";
     this.pinRequested = false;
   }
 
@@ -76,14 +76,15 @@ export class LoginView {
             </p>
 
             <form id="form-login" novalidate>
-              <!-- Cuadro de credenciales institucionales por defecto para referencia rápida -->
+              <!-- Cuadro de credenciales institucionales válidas para referencia rápida -->
               <div class="credentials-info-box" style="margin-bottom: 1.25rem; padding: 0.85rem 1rem; border-radius: 8px; background-color: var(--bg-hover); border: 2px solid var(--border-color); font-size: var(--font-sm);">
-                <div style="font-weight: 800; color: var(--utp-red); margin-bottom: 0.25rem;">
-                  <span aria-hidden="true">🔑</span> Credenciales por Defecto UTP:
+                <div style="font-weight: 800; color: var(--utp-red); margin-bottom: 0.35rem;">
+                  <span aria-hidden="true">🔑</span> Usuarios y Credenciales Válidas UTP:
                 </div>
-                <div style="color: var(--text-secondary); line-height: 1.5;">
-                  • <strong>Código:</strong> <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U20211234</kbd> (o <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U22220525</kbd>)<br />
-                  • <strong>Contraseña:</strong> <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">password123</kbd> (o solicitar PIN <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">8492</kbd>)
+                <div style="color: var(--text-secondary); line-height: 1.6;">
+                  • <strong>Linares Carmen, Anyelo Gianbranco:</strong> Código <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U22220525</kbd> | Clave: <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">123456</kbd><br />
+                  • <strong>Tuñoque Paredes, Jhoselyn:</strong> Código <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U22212626</kbd> | Clave: <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">123456</kbd><br />
+                  • <em>Alternativa motriz: Solicitar PIN rápido (<kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">8492</kbd>)</em>
                 </div>
               </div>
 
@@ -95,14 +96,14 @@ export class LoginView {
                   Código de Estudiante <span aria-hidden="true">*</span>
                 </label>
                 <span id="codigo-hint" class="form-hint">
-                  Ejemplo verbal: Diga <strong>"u 2 2 2 2 0 5 25"</strong> o <strong>"dictar código U20211234"</strong>.
+                  Ejemplo verbal: Diga <strong>"u 2 2 2 2 0 5 25"</strong> o <strong>"dictar código U22220525"</strong>.
                 </span>
                 <div class="voice-input-wrapper">
                   <input
                     type="text"
                     id="input-codigo"
                     class="form-input"
-                    value="${this.codigoValue || 'U20211234'}"
+                    value="${this.codigoValue || 'U22220525'}"
                     autocomplete="username"
                     required
                     aria-describedby="codigo-hint codigo-feedback-box"
@@ -127,13 +128,13 @@ export class LoginView {
                   Contraseña Institucional <span aria-hidden="true">*</span>
                 </label>
                 <span id="password-hint" class="form-hint">
-                  Ingrese su contraseña institucional o solicite un PIN de acceso rápido.
+                  Ingrese su contraseña institucional (123456) o solicite un PIN de acceso rápido.
                 </span>
                 <input
                   type="password"
                   id="input-password"
                   class="form-input"
-                  value="password123"
+                  value="123456"
                   autocomplete="current-password"
                   required
                   aria-describedby="password-hint"
@@ -188,10 +189,18 @@ export class LoginView {
             <ul class="command-list" role="list">
               <li class="command-item">
                 <div>
-                  <span class="command-trigger-badge">"dictar código U20211234"</span>
-                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Rellena el código de alumno</div>
+                  <span class="command-trigger-badge">"Anyelo U22220525"</span>
+                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Linares Carmen, Anyelo (U22220525)</div>
                 </div>
-                <button type="button" class="btn-test-command" data-exec="dictar" aria-label="Probar comando dictar código" data-descripcion="Botón Probar: simula el dictado verbal del código de estudiante U20211234">Probar</button>
+                <button type="button" class="btn-test-command" data-exec="user1" aria-label="Probar estudiante Anyelo Linares" data-descripcion="Botón Probar: Carga los datos de Anyelo Linares U22220525">Probar</button>
+              </li>
+
+              <li class="command-item">
+                <div>
+                  <span class="command-trigger-badge">"Jhoselyn U22212626"</span>
+                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Tuñoque Paredes, Jhoselyn (U22212626)</div>
+                </div>
+                <button type="button" class="btn-test-command" data-exec="user2" aria-label="Probar estudiante Jhoselyn Tuñoque" data-descripcion="Botón Probar: Carga los datos de Jhoselyn Tuñoque U22212626">Probar</button>
               </li>
 
               <li class="command-item">
@@ -200,14 +209,6 @@ export class LoginView {
                   <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Limpia la casilla</div>
                 </div>
                 <button type="button" class="btn-test-command" data-exec="borrar" aria-label="Probar comando borrar código" data-descripcion="Botón Probar: limpia y vacía la casilla del código de estudiante">Probar</button>
-              </li>
-
-              <li class="command-item">
-                <div>
-                  <span class="command-trigger-badge">"u 2 2 2 2 0 5 25"</span>
-                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Une números en U22220525</div>
-                </div>
-                <button type="button" class="btn-test-command" data-exec="u22" aria-label="Probar comando u 2 2 2 2 0 5 25" data-descripcion="Botón Probar: simula la unión y tipeo de los números dictados individualmente">Probar</button>
               </li>
 
               <li class="command-item">
@@ -340,15 +341,26 @@ export class LoginView {
       return;
     }
 
-    // Actualizar código en datos del estudiante
-    ESTUDIANTE.codigo = valCodigo;
+    // Validación contra usuarios registrados
+    const auth = autenticarUsuario(valCodigo, valPassword);
+    if (!auth.valido) {
+      showError(auth.mensaje);
+      if (inputPassword) {
+        inputPassword.value = "";
+        inputPassword.focus();
+      }
+      return;
+    }
+
+    // Actualizar todos los datos del estudiante activo
+    Object.assign(ESTUDIANTE, auth.usuario);
 
     // Feedback sonoro y accesible
     accessibilityManager.playEarcon("success");
-    accessibilityManager.announceAssertive(`Acceso concedido para el código ${valCodigo}. Ingresando al catálogo de matrícula.`);
+    accessibilityManager.announceAssertive(`Acceso concedido para ${ESTUDIANTE.nombre}. Ingresando al catálogo de matrícula.`);
 
     // Emitir mensaje por voz
-    speechSynthesisManager.speak(`Identidad confirmada para el código ${valCodigo}. Ingresando al catálogo de matrícula.`, true);
+    speechSynthesisManager.speak(`Bienvenido ${ESTUDIANTE.nombre}. Acceso concedido. Ingresando al catálogo de matrícula.`, true);
 
     // Transición inmediata a la vista de matrícula para garantizar que siempre abra de inmediato
     if (typeof this.onLoginSuccess === "function") {
@@ -358,6 +370,10 @@ export class LoginView {
 
   handleSolicitarPin() {
     this.pinRequested = true;
+    const inputCodigo = document.getElementById("input-codigo");
+    const cod = (inputCodigo ? inputCodigo.value : "").trim().toUpperCase();
+    const usuario = USUARIOS_REGISTRADOS.find(u => u.codigo.toUpperCase() === cod) || ESTUDIANTE;
+
     const inputPassword = document.getElementById("input-password");
     if (inputPassword) {
       inputPassword.value = "8492";
@@ -366,7 +382,7 @@ export class LoginView {
     if (msgEl) {
       msgEl.style.display = "block";
       msgEl.style.color = "var(--color-success-text)";
-      msgEl.textContent = `✅ PIN de acceso rápido '8492' enviado a su móvil ${ESTUDIANTE.telefonoContacto}. El sistema lo aplicó automáticamente al campo de contraseña.`;
+      msgEl.textContent = `✅ PIN de acceso rápido '8492' enviado a su móvil registrado ${usuario.telefonoContacto} (${usuario.nombre}). El sistema lo aplicó automáticamente al campo de contraseña.`;
     }
     accessibilityManager.playEarcon("success");
     speechSynthesisManager.speak("PIN 8492 enviado con éxito. Se ha autocompletado en el campo de contraseña.", true);
@@ -463,10 +479,12 @@ export class LoginView {
   }
 
   executeCommand(action) {
-    if (action === "dictar") {
+    if (action === "user1" || action === "u22") {
+      this.cargarUsuario("U22220525", "123456");
+    } else if (action === "user2") {
+      this.cargarUsuario("U22212626", "123456");
+    } else if (action === "dictar") {
       this.handleVoiceCommand("DICTAR_CODIGO", ESTUDIANTE.codigo);
-    } else if (action === "u22") {
-      this.handleVoiceCommand("DICTAR_CODIGO", "U22220525");
     } else if (action === "repetir") {
       this.handleVoiceCommand("REPETIR_CODIGO", null);
     } else if (action === "borrar") {
@@ -481,5 +499,19 @@ export class LoginView {
     } else if (action === "ayuda") {
       this.handleVoiceCommand("AYUDA", null);
     }
+  }
+
+  cargarUsuario(codigo, password) {
+    const inputCodigo = document.getElementById("input-codigo");
+    const inputPassword = document.getElementById("input-password");
+    if (inputCodigo) inputCodigo.value = codigo;
+    if (inputPassword) inputPassword.value = password;
+    this.codigoValue = codigo;
+    this.passwordValue = password;
+    const usr = USUARIOS_REGISTRADOS.find(u => u.codigo === codigo);
+    const nombre = usr ? usr.nombre : codigo;
+    accessibilityManager.playEarcon("success");
+    accessibilityManager.announcePolite(`Credenciales cargadas para ${nombre}.`);
+    speechSynthesisManager.speak(`Credenciales cargadas para ${nombre}. Presione Ingresar o Enter para acceder.`, true);
   }
 }
