@@ -102,21 +102,49 @@ class AccessibilityManager {
     }
   }
 
-  // Ajuste de escala tipográfica
-  changeFontScale(delta) {
-    if (delta === 0) {
-      this.currentScaleIndex = 0; // Normal
+  // Establecer directamente la escala por índice absoluto (0: Normal, 1: Grande, 2: Máximo)
+  setFontScaleIndex(index) {
+    const target = parseInt(index, 10);
+    if (!isNaN(target) && target >= 0 && target < this.fontScaleLevels.length) {
+      this.currentScaleIndex = target;
+      this.applyFontScale();
+      localStorage.setItem("utp_font_scale_index", this.currentScaleIndex);
+
+      const labels = ["Tamaño de texto Normal (100%)", "Tamaño de texto Grande (125%)", "Tamaño de texto Extra Grande (150%)"];
+      this.announcePolite(labels[this.currentScaleIndex]);
+    }
+    return this.currentScaleIndex;
+  }
+
+  // Ajuste de escala tipográfica flexible (admite índice absoluto 0, 1, 2 o delta relativo)
+  changeFontScale(val) {
+    if (val === 0 || val === 1 || val === 2) {
+      // Si se pasa un nivel explícito, se establece directamente
+      return this.setFontScaleIndex(val);
+    } else if (val === -1) {
+      return this.stepDownFontScale();
     } else {
-      const nextIndex = this.currentScaleIndex + delta;
+      const nextIndex = this.currentScaleIndex + val;
       if (nextIndex >= 0 && nextIndex < this.fontScaleLevels.length) {
-        this.currentScaleIndex = nextIndex;
+        return this.setFontScaleIndex(nextIndex);
       }
     }
-    this.applyFontScale();
-    localStorage.setItem("utp_font_scale_index", this.currentScaleIndex);
+    return this.currentScaleIndex;
+  }
 
-    const labels = ["Tamaño de texto Normal (100%)", "Tamaño de texto Grande (125%)", "Tamaño de texto Extra Grande (150%)"];
-    this.announcePolite(labels[this.currentScaleIndex]);
+  // Aumentar un nivel de escala (+1 relativo)
+  stepUpFontScale() {
+    if (this.currentScaleIndex < this.fontScaleLevels.length - 1) {
+      return this.setFontScaleIndex(this.currentScaleIndex + 1);
+    }
+    return this.currentScaleIndex;
+  }
+
+  // Reducir un nivel de escala (-1 relativo)
+  stepDownFontScale() {
+    if (this.currentScaleIndex > 0) {
+      return this.setFontScaleIndex(this.currentScaleIndex - 1);
+    }
     return this.currentScaleIndex;
   }
 

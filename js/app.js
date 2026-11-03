@@ -42,13 +42,13 @@ class App {
     const btnToggleContrast = document.getElementById("btn-toggle-contrast");
 
     if (btnScaleNormal) {
-      btnScaleNormal.addEventListener("click", () => accessibilityManager.changeFontScale(0));
+      btnScaleNormal.addEventListener("click", () => accessibilityManager.setFontScaleIndex(0));
     }
     if (btnScalePlus) {
-      btnScalePlus.addEventListener("click", () => accessibilityManager.changeFontScale(1));
+      btnScalePlus.addEventListener("click", () => accessibilityManager.setFontScaleIndex(1));
     }
     if (btnScaleMax) {
-      btnScaleMax.addEventListener("click", () => accessibilityManager.changeFontScale(2));
+      btnScaleMax.addEventListener("click", () => accessibilityManager.setFontScaleIndex(2));
     }
     if (btnToggleContrast) {
       btnToggleContrast.addEventListener("click", () => accessibilityManager.toggleHighContrast());
@@ -126,13 +126,13 @@ class App {
           }
         } else if (e.key === "1") {
           e.preventDefault();
-          accessibilityManager.changeFontScale(0);
+          accessibilityManager.setFontScaleIndex(0);
         } else if (e.key === "2") {
           e.preventDefault();
-          accessibilityManager.changeFontScale(1);
+          accessibilityManager.setFontScaleIndex(1);
         } else if (e.key === "3") {
           e.preventDefault();
-          accessibilityManager.changeFontScale(2);
+          accessibilityManager.setFontScaleIndex(2);
         }
       }
     });

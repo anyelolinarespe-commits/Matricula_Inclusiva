@@ -281,12 +281,12 @@ class SpeechRecognitionManager {
     }
 
     if (cleanText.includes("aumentar texto") || cleanText.includes("letra grande") || cleanText.includes("texto más grande")) {
-      accessibilityManager.changeFontScale(1);
+      accessibilityManager.stepUpFontScale();
       return;
     }
 
-    if (cleanText.includes("disminuir texto") || cleanText.includes("letra normal") || cleanText.includes("texto normal")) {
-      accessibilityManager.changeFontScale(-1);
+    if (cleanText.includes("disminuir texto") || cleanText.includes("reducir texto") || cleanText.includes("letra normal") || cleanText.includes("texto normal")) {
+      accessibilityManager.stepDownFontScale();
       return;
     }
 
