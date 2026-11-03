@@ -163,6 +163,8 @@ class App {
     if (viewName === "login") {
       this.activeViewInstance = new LoginView(this.container, () => {
         this.state.isLoggedIn = true;
+        // Pre-cargar los dos primeros cursos de la malla del estudiante autenticado (7 créditos iniciales)
+        this.state.cursosMatriculados = [CURSOS_CATALOGO[0], CURSOS_CATALOGO[1]];
         this.navigateTo("matricula");
       });
       this.activeViewInstance.render();

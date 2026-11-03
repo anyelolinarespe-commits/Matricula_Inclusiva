@@ -39,8 +39,8 @@ export class LoginView {
   constructor(container, onLoginSuccess) {
     this.container = container;
     this.onLoginSuccess = onLoginSuccess;
-    this.codigoValue = ESTUDIANTE.codigo || "U22220525";
-    this.passwordValue = "123456";
+    this.codigoValue = "";
+    this.passwordValue = "";
     this.pinRequested = false;
   }
 
@@ -78,12 +78,14 @@ export class LoginView {
             <form id="form-login" novalidate>
               <!-- Cuadro de credenciales institucionales válidas para referencia rápida -->
               <div class="credentials-info-box" style="margin-bottom: 1.25rem; padding: 0.85rem 1rem; border-radius: 8px; background-color: var(--bg-hover); border: 2px solid var(--border-color); font-size: var(--font-sm);">
-                <div style="font-weight: 800; color: var(--utp-red); margin-bottom: 0.35rem;">
-                  <span aria-hidden="true">🔑</span> Usuarios y Credenciales Válidas UTP:
+                <div style="font-weight: 800; color: var(--utp-red); margin-bottom: 0.4rem;">
+                  <span aria-hidden="true">🔑</span> Estudiantes y Mallas Curriculares UTP (Clave común: <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">123456</kbd>):
                 </div>
                 <div style="color: var(--text-secondary); line-height: 1.6;">
-                  • <strong>Linares Carmen, Anyelo Gianbranco:</strong> Código <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U22220525</kbd> | Clave: <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">123456</kbd><br />
-                  • <strong>Tuñoque Paredes, Jhoselyn:</strong> Código <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U22212626</kbd> | Clave: <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">123456</kbd><br />
+                  • <strong>Ing. de Sistemas:</strong> <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U22220525</kbd> (Anyelo Linares) | <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U22212626</kbd> (Jhoselyn Tuñoque)<br />
+                  • <strong>Ing. Industrial:</strong> <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U22301452</kbd> (Mateo Ramírez)<br />
+                  • <strong>Adm. y Marketing:</strong> <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U22108743</kbd> (Valeria Quispe)<br />
+                  • <strong>Derecho:</strong> <kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">U22319024</kbd> (Diego Flores)<br />
                   • <em>Alternativa motriz: Solicitar PIN rápido (<kbd style="padding: 0.15rem 0.4rem; background: rgba(0,0,0,0.1); border-radius: 4px;">8492</kbd>)</em>
                 </div>
               </div>
@@ -96,14 +98,15 @@ export class LoginView {
                   Código de Estudiante <span aria-hidden="true">*</span>
                 </label>
                 <span id="codigo-hint" class="form-hint">
-                  Ejemplo verbal: Diga <strong>"u 2 2 2 2 0 5 25"</strong> o <strong>"dictar código U22220525"</strong>.
+                  Ejemplo verbal: Diga <strong>"u 2 2 3 0 1 4 52"</strong> o <strong>"dictar código U22220525"</strong>.
                 </span>
                 <div class="voice-input-wrapper">
                   <input
                     type="text"
                     id="input-codigo"
                     class="form-input"
-                    value="${this.codigoValue || 'U22220525'}"
+                    value="${this.codigoValue || ''}"
+                    placeholder="Ej. U22220525, U22301452, U22108743..."
                     autocomplete="username"
                     required
                     aria-describedby="codigo-hint codigo-feedback-box"
@@ -134,7 +137,8 @@ export class LoginView {
                   type="password"
                   id="input-password"
                   class="form-input"
-                  value="123456"
+                  value=""
+                  placeholder="Ingrese su contraseña institucional"
                   autocomplete="current-password"
                   required
                   aria-describedby="password-hint"
@@ -189,26 +193,50 @@ export class LoginView {
             <ul class="command-list" role="list">
               <li class="command-item">
                 <div>
-                  <span class="command-trigger-badge">"Anyelo U22220525"</span>
-                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Linares Carmen, Anyelo (U22220525)</div>
+                  <span class="command-trigger-badge">"Anyelo (Sistemas)"</span>
+                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Linares, Anyelo • U22220525</div>
                 </div>
-                <button type="button" class="btn-test-command" data-exec="user1" aria-label="Probar estudiante Anyelo Linares" data-descripcion="Botón Probar: Carga los datos de Anyelo Linares U22220525">Probar</button>
+                <button type="button" class="btn-test-command" data-exec="user1" aria-label="Probar Anyelo Linares Sistemas" data-descripcion="Botón Probar: Carga credenciales de Anyelo Linares">Probar</button>
               </li>
 
               <li class="command-item">
                 <div>
-                  <span class="command-trigger-badge">"Jhoselyn U22212626"</span>
-                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Tuñoque Paredes, Jhoselyn (U22212626)</div>
+                  <span class="command-trigger-badge">"Jhoselyn (Sistemas)"</span>
+                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Tuñoque, Jhoselyn • U22212626</div>
                 </div>
-                <button type="button" class="btn-test-command" data-exec="user2" aria-label="Probar estudiante Jhoselyn Tuñoque" data-descripcion="Botón Probar: Carga los datos de Jhoselyn Tuñoque U22212626">Probar</button>
+                <button type="button" class="btn-test-command" data-exec="user2" aria-label="Probar Jhoselyn Tuñoque Sistemas" data-descripcion="Botón Probar: Carga credenciales de Jhoselyn Tuñoque">Probar</button>
+              </li>
+
+              <li class="command-item">
+                <div>
+                  <span class="command-trigger-badge">"Mateo (Industrial)"</span>
+                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Ramírez, Mateo • U22301452</div>
+                </div>
+                <button type="button" class="btn-test-command" data-exec="user3" aria-label="Probar Mateo Ramírez Industrial" data-descripcion="Botón Probar: Carga credenciales de Mateo Ramírez">Probar</button>
+              </li>
+
+              <li class="command-item">
+                <div>
+                  <span class="command-trigger-badge">"Valeria (Marketing)"</span>
+                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Quispe, Valeria • U22108743</div>
+                </div>
+                <button type="button" class="btn-test-command" data-exec="user4" aria-label="Probar Valeria Quispe Marketing" data-descripcion="Botón Probar: Carga credenciales de Valeria Quispe">Probar</button>
+              </li>
+
+              <li class="command-item">
+                <div>
+                  <span class="command-trigger-badge">"Diego (Derecho)"</span>
+                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Flores, Diego • U22319024</div>
+                </div>
+                <button type="button" class="btn-test-command" data-exec="user5" aria-label="Probar Diego Flores Derecho" data-descripcion="Botón Probar: Carga credenciales de Diego Flores">Probar</button>
               </li>
 
               <li class="command-item">
                 <div>
                   <span class="command-trigger-badge">"borrar código"</span>
-                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Limpia la casilla</div>
+                  <div style="font-size: var(--font-sm); margin-top: 0.2rem;">Limpia casillas</div>
                 </div>
-                <button type="button" class="btn-test-command" data-exec="borrar" aria-label="Probar comando borrar código" data-descripcion="Botón Probar: limpia y vacía la casilla del código de estudiante">Probar</button>
+                <button type="button" class="btn-test-command" data-exec="borrar" aria-label="Probar comando borrar código" data-descripcion="Botón Probar: limpia y vacía las casillas de acceso">Probar</button>
               </li>
 
               <li class="command-item">
@@ -483,6 +511,12 @@ export class LoginView {
       this.cargarUsuario("U22220525", "123456");
     } else if (action === "user2") {
       this.cargarUsuario("U22212626", "123456");
+    } else if (action === "user3") {
+      this.cargarUsuario("U22301452", "123456");
+    } else if (action === "user4") {
+      this.cargarUsuario("U22108743", "123456");
+    } else if (action === "user5") {
+      this.cargarUsuario("U22319024", "123456");
     } else if (action === "dictar") {
       this.handleVoiceCommand("DICTAR_CODIGO", ESTUDIANTE.codigo);
     } else if (action === "repetir") {

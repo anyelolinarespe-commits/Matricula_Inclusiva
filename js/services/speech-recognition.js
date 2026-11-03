@@ -335,6 +335,18 @@ class SpeechRecognitionManager {
         this.dispatchCommand("DICTAR_CODIGO", "U22212626");
         return;
       }
+      if (cleanText.includes("mateo") || cleanText.includes("ramírez") || cleanText.includes("ramirez")) {
+        this.dispatchCommand("DICTAR_CODIGO", "U22301452");
+        return;
+      }
+      if (cleanText.includes("valeria") || cleanText.includes("quispe")) {
+        this.dispatchCommand("DICTAR_CODIGO", "U22108743");
+        return;
+      }
+      if (cleanText.includes("diego") || cleanText.includes("flores")) {
+        this.dispatchCommand("DICTAR_CODIGO", "U22319024");
+        return;
+      }
 
       // 5. Dictado y unión inteligente de código de estudiante
       const codigoDetectado = this.parsearCodigoDictado(text);
@@ -589,14 +601,14 @@ class SpeechRecognitionManager {
       return parseInt(matchDigito[0], 10);
     }
 
-    // 2. Mapeo de nombres o palabras numéricas
+    // 2. Mapeo de nombres o palabras numéricas para todas las mallas
     const mapa = {
-      "uno": 1, "primero": 1, "algoritmos": 1, "estructuras": 1,
-      "dos": 2, "segundo": 2, "base de datos": 2, "bases": 2, "base": 2,
-      "tres": 3, "tercero": 3, "redes": 3, "comunicaciones": 3,
-      "cuatro": 4, "cuarto": 4, "arquitectura": 4, "software": 4,
-      "cinco": 5, "quinto": 5, "interacción": 5, "interaccion": 5, "humano": 5, "ihm": 5,
-      "seis": 6, "sexto": 6, "seguridad": 6, "información": 6, "informacion": 6
+      "uno": 1, "primero": 1, "algoritmos": 1, "estructuras": 1, "operaciones": 1, "investigación de operaciones": 1, "consumidor": 1, "comportamiento": 1, "penal": 1, "litigación": 1, "procesal penal": 1,
+      "dos": 2, "segundo": 2, "base de datos": 2, "bases": 2, "base": 2, "calidad": 2, "control de calidad": 2, "mercados": 2, "investigación de mercados": 2, "civil": 2, "obligaciones": 2,
+      "tres": 3, "tercero": 3, "redes": 3, "comunicaciones": 3, "procesos": 3, "manufactura": 3, "marketing estratégico": 3, "digital": 3, "laboral": 3, "colectivas": 3,
+      "cuatro": 4, "cuarto": 4, "arquitectura": 4, "software": 4, "seguridad y salud": 4, "ocupacional": 4, "marcas": 4, "branding": 4, "constitucional": 4, "amparo": 4,
+      "cinco": 5, "quinto": 5, "interacción": 5, "interaccion": 5, "humano": 5, "ihm": 5, "ergonomía": 5, "métodos": 5, "comercio": 5, "omnicanalidad": 5, "argumentación": 5, "deontología": 5,
+      "seis": 6, "sexto": 6, "seguridad": 6, "información": 6, "informacion": 6, "logística": 6, "logistica": 6, "cadena": 6, "publicidad": 6, "comunicación": 6, "administrativo": 6, "procedimientos": 6
     };
 
     for (const [clave, num] of Object.entries(mapa)) {
