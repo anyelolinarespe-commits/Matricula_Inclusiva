@@ -317,37 +317,50 @@ export class LoginView {
       errorBox.style.display = "none";
       errorBox.textContent = "";
     }
+    if (inputCodigo) inputCodigo.removeAttribute("aria-invalid");
+    if (inputPassword) inputPassword.removeAttribute("aria-invalid");
 
     const showError = (msg) => {
+      const cleanMsg = msg.replace(/^❌\s*/, "").trim();
       accessibilityManager.playEarcon("error");
-      accessibilityManager.announceAssertive(`Error: ${msg}`);
-      speechSynthesisManager.speak(`Error. ${msg}`, true);
+      accessibilityManager.announceAssertive(`Error: ${cleanMsg}`);
+      speechSynthesisManager.speak(`Error. ${cleanMsg}`, true);
       if (errorBox) {
-        errorBox.textContent = `❌ ${msg}`;
+        errorBox.textContent = `❌ ${cleanMsg}`;
         errorBox.style.display = "block";
       }
     };
 
     if (!valCodigo) {
+      if (inputCodigo) {
+        inputCodigo.setAttribute("aria-invalid", "true");
+        inputCodigo.focus();
+      }
       showError("El campo de código de estudiante no puede estar vacío. Por favor dígalo o escríbalo.");
-      if (inputCodigo) inputCodigo.focus();
       return;
     }
 
     if (!valPassword) {
+      if (inputPassword) {
+        inputPassword.setAttribute("aria-invalid", "true");
+        inputPassword.focus();
+      }
       showError("El campo de contraseña no puede estar vacío. Ingrese su contraseña institucional o solicite un PIN de acceso rápido.");
-      if (inputPassword) inputPassword.focus();
       return;
     }
 
-    // Validación contra usuarios registrados
+    // Validación contra usuarios registrados aplicando criterio de seguridad OWASP
     const auth = autenticarUsuario(valCodigo, valPassword);
     if (!auth.valido) {
-      showError(auth.mensaje);
       if (inputPassword) {
+        inputPassword.setAttribute("aria-invalid", "true");
         inputPassword.value = "";
         inputPassword.focus();
       }
+      if (inputCodigo) {
+        inputCodigo.setAttribute("aria-invalid", "true");
+      }
+      showError(auth.mensaje);
       return;
     }
 

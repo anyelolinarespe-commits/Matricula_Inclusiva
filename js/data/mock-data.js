@@ -575,20 +575,30 @@ export function autenticarUsuario(codigo, password) {
   const codLimpio = String(codigo || "").trim().toUpperCase();
   const passLimpio = String(password || "").trim();
 
-  const usuario = USUARIOS_REGISTRADOS.find(u => u.codigo.toUpperCase() === codLimpio);
-
-  if (!usuario) {
+  // Validación de seguridad: Campo de contraseña vacío
+  if (!passLimpio) {
     return {
       valido: false,
-      mensaje: `El código '${codigo}' no se encuentra registrado en el sistema institucional.`
+      mensaje: "El campo de contraseña no puede estar vacío. Ingrese su contraseña institucional o solicite un PIN de acceso rápido."
     };
   }
 
-  // Acepta la contraseña del usuario, 123456 o PIN accesible 8492
-  if (passLimpio !== usuario.password && passLimpio !== "123456" && passLimpio !== "8492") {
+  // Validación de seguridad: Campo de código vacío
+  if (!codLimpio) {
     return {
       valido: false,
-      mensaje: "Contraseña incorrecta. Verifique sus credenciales (123456) o solicite un PIN de acceso rápido."
+      mensaje: "El campo de código de estudiante no puede estar vacío. Por favor dígalo o escríbalo."
+    };
+  }
+
+  const usuario = USUARIOS_REGISTRADOS.find(u => u.codigo.toUpperCase() === codLimpio);
+
+  // Principio de seguridad OWASP contra enumeración de usuarios:
+  // No revelar si el código de usuario existe o si la clave fue incorrecta.
+  if (!usuario || (passLimpio !== usuario.password && passLimpio !== "123456" && passLimpio !== "8492")) {
+    return {
+      valido: false,
+      mensaje: "Usuario o contraseña no válido."
     };
   }
 
