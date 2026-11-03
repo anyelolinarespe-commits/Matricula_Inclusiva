@@ -68,6 +68,9 @@ export class LoginView {
         <div class="login-view-layout">
           <!-- Formulario Principal -->
           <div class="login-card">
+            <div class="login-card-brand">
+              <img src="assets/utp-logo.svg" alt="Universidad Tecnológica del Perú" class="login-card-logo" width="140" height="42" />
+            </div>
             <h2 style="font-size: var(--font-2xl); font-weight: 800; margin-bottom: 0.5rem; color: var(--utp-red);">
               Ingreso a Matrícula 2026-II
             </h2>

@@ -69,10 +69,52 @@ body.alto-contraste .site-header , body.high-contrast .site-header {
   justify-content: center;
 }
 
+.utp-logo-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 6px;
+  padding: 2px 4px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.utp-logo-wrapper:focus-visible {
+  outline: 3px solid var(--utp-red);
+  outline-offset: 3px;
+}
+
+.utp-logo-img {
+  height: 42px;
+  width: auto;
+  max-width: 155px;
+  display: block;
+  object-fit: contain;
+}
+
+.login-card-logo {
+  height: 42px;
+  width: auto;
+  max-width: 160px;
+  display: block;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+}
+
 body.alto-contraste .utp-badge , body.high-contrast .utp-badge {
   background-color: #FFFF00;
   color: #000000;
   border: 2px solid #FFFFFF;
+}
+
+body.alto-contraste .utp-logo-wrapper,
+body.high-contrast .utp-logo-wrapper,
+body.alto-contraste .login-card-logo,
+body.high-contrast .login-card-logo {
+  background-color: #FFFFFF;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 2px solid #FFFF00;
 }
 
 .brand-title {
